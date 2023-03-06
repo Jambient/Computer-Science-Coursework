@@ -1,0 +1,30 @@
+{% extends 'dashboard/base.html' %}
+
+{% block content %}
+
+<h2 class="title">Home</h2>
+<div class="home-banner">
+    <img src="static/uploads/HomeBanner.png">
+    <h4>Hello {{ g.user['FirstName'] }},</h4>
+    <p>Get started below.</p>
+</div>
+
+<div class="home-info">
+    <div class="notifications">
+        <h3 class="title">Notifications</h3>
+        <div class="notification">
+            <div class="unread"></div>
+            <img src="static/uploads/temp_pfp.png"></img>
+            <div class="info">
+                <h4>Computer Science</h4>
+                <p>has added you to the class.</p>    
+            </div>
+            <p class="time">10m ago</p> 
+        </div>
+    </div>
+    <div class="recent-quizzes">
+        <h3 class="title">Recent Quizzes</h3>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,252 @@
+:root {
+    --green-sea: #16A086;
+}
+
+body {
+    margin: 15px;
+    overflow: hidden;
+    font-family: 'Readex Pro';
+    background: rgb(30, 30, 30);
+}
+
+.material-symbols-outlined {
+    font-variation-settings:
+      'FILL' 1,
+      'wght' 400,
+      'GRAD' 0,
+      'opsz' 48
+}
+
+.hide {
+    display: none !important;
+}
+
+.settings {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: rgb(74, 74, 74);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    z-index: 50;
+    position: absolute;
+}
+.settings span {
+    font-size: 30px;
+}
+
+.timer {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: rgb(74, 74, 74);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    z-index: 50;
+    position: absolute;
+    right: 15px;
+}
+
+.page {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+}
+
+#pre-start {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 40px;
+}
+#pre-start > p {
+    color: white;
+    margin: 0;
+}
+#pre-start > img {
+    width: 50px;
+}
+
+.quiz-data {
+    width: 550px;
+    height: 300px;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.quiz-thumbnail {
+    width: 100%;
+    height: 45%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.class-name {
+    position: absolute;
+    top: 10px;
+    color: white;
+    left: 10px;
+    margin: 0;
+}
+
+.class-group {
+    position: absolute;
+    top: 10px;
+    color: white;
+    right: 10px;
+    margin: 0;
+}
+
+.gradient {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: var(--green-sea);
+    opacity: 80%;
+}
+
+.quiz-thumbnail h1 {
+    z-index: 2;
+}
+.quiz-thumbnail img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+#questions {
+    display: grid;
+}
+
+.quiz-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 50%;
+    height: 50%;
+    background-color: blue;
+    padding: 10px 0px 10px 0px;
+}
+
+.question-data {
+    width: 100%;
+    height: 180px;
+    overflow: hidden;
+    position: relative;
+}
+
+.question-data img {
+    width: 100%;
+    object-fit: cover;
+}
+
+.data-box {
+    position: absolute;
+    bottom: 0;
+    width: 70%;
+    height: 70%;
+    background: rgb(30, 30, 30);
+    display: flex;
+    flex-direction: column;
+    left: 50%;
+    transform: translate(-50%, 0);
+    color: white;
+    max-width: 600px;
+    align-items: center;
+}
+.data-box p {
+    margin: 0;
+}
+.data-box h1 {
+    margin: 0;
+}
+
+#question-total {
+    opacity: 40%;
+}
+
+.answer {
+    display: flex;
+    margin-top: 100px;
+    align-items: center;
+    justify-content: center;
+}
+.answer div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+.answer button {
+    padding: 10px;
+}
+
+/* Waiting page */
+#waiting {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 30px;
+    color: white;
+}
+#waiting > div {
+    width: 100px;
+    height: 100px;
+    background: var(--green-sea);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+#waiting > div > div {
+    width: 15px;
+    height: 15px;
+    background: white;
+    border-radius: 50%;
+}
+
+/* correct and incorrect page */
+.answer-status-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    color: white;   
+}
+.answer-status-page > div {
+    width: 100px;
+    height: 100px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.answer-status-page h1 {
+    margin: 0;
+    margin-top: 50px;
+    font-size: 50px;
+}
+.answer-status-page > h3 {
+    margin: 0;
+    font-size: 30px;
+    color: black;
+    opacity: 40%;
+}
+.answer-status-page > div span {
+    font-size: 70px;
+}   

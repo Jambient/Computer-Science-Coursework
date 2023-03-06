@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Qearn</title>
+    <link rel="stylesheet" href="/static/quizzes.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+</head>
+<body data-quizID="{{ quiz['ID'] }}">
+
+<img src="/static/uploads/LandingBackgroundRight1.svg" style="top: 0; height: 80%; right: 0; z-index: -1; position: absolute">
+<img src="/static/uploads/LandingBackgroundRight2.svg" style="top: 0; height: 30%; right: 0; z-index: -1; position: absolute">
+
+<nav>
+    <div class="title-box">
+        <img src="/static/uploads/QearnLogo.png">
+        <h1>quizzes</h1>
+    </div>
+    <div class="account-box">
+        <h4>{{ g.user['FirstName'] }} {{ g.user['LastName'] }}</h4>
+        <img class="profile-img" src="{{ url_for('static', filename=('users/' + (g.user['ID']|string) + '.jpg')) }}">
+    </div>
+</nav>
+
+<div class="header">
+    <img src="{{ url_for('static', filename=('quizzes/' + (quiz['ID']|string) + '.jpg')) }}">
+    <div class="darken"></div>
+    <h1>{{ quiz['Name'] }}</h1>
+</div>
+
+<section class="quiz-data">
+    <div class="data-container">
+        <p>This will be the quiz description which will just be a short explanation explaining what the quiz is about.</p>
+        <div class="owner">
+            <img src="{{ url_for('static', filename=('users/' + (quiz['Owner']['ID']|string) + '.jpg')) }}">
+            <div>
+                <h4>{{ quiz['Owner']['FirstName'] }} {{ quiz['Owner']['LastName'] }}</h4>
+                <h4>{{ quiz['Owner']['SchoolName'] }}</h4>
+            </div>
+        </div>
+    </div>
+    <div class="start-container">
+        <div class="dropdown">
+            <div>
+                <h4></h4>
+                <p></p>
+            </div>
+            <span class="material-symbols-outlined">expand_more</span>
+            <div class="options hide">
+                {% for class in classes %}
+                    <div data-ID="{{ class['ID'] }}">
+                        <h4>{{ class['ClassName'] }}</h4>
+                        <p>{{ class['ClassGroup'] }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="start-button">Start Quiz</div>
+    </div>
+</section>
+
+<hr>
+
+<div class="questions">
+    <h2>Questions ({{ quiz['Questions']|length }})</h2>
+    {% for question in quiz['Questions'] %}
+        <div class="question-container">
+            <div class="question">
+                <div>
+                    <h3>{{ question['OrderIndex'] }} - {{ question['QuestionType'] }}</h3>
+                    <h2>{{ question['QuestionString'] }}</h2>
+                </div>
+                <span class="material-symbols-outlined">expand_more</span>
+            </div>
+            <div class="answers hide">
+                {% for answer in question['Answers'] %}
+                    <div>
+                        <h3>{{ answer['AnswerString'] }}</h2>
+                        <span class="material-symbols-outlined {{ 'correct' if answer['IsCorrect'] == 1 else 'incorrect' }}">{{ 'check' if answer['IsCorrect'] == 1 else 'close' }}</span>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+</body>
+<script src="/static/landing.js"></script>
+
+<script>
+
+let questions = document.getElementsByClassName('question-container')
+
+let dropdown = document.getElementsByClassName('dropdown')[0]
+let dropdownExpandButton = dropdown.querySelector('span')
+let dropdownOptionContainer = dropdown.querySelector('.options')
+let dropdownOptions = dropdown.querySelectorAll('.options div')
+let startButton = document.querySelector('.start-button')
+
+for (let question of questions) {
+    let expandButton = question.querySelector('.question span')
+    let answerContainer = question.querySelector('.answers')
+
+    expandButton.onclick = function() {
+        let isOpen = answerContainer.classList.contains('hide')
+        if (!isOpen) {
+            expandButton.innerHTML = 'expand_more'
+            answerContainer.classList.add('hide')
+        } else {
+            expandButton.innerHTML = 'expand_less'
+            answerContainer.classList.remove('hide')
+        }
+    }
+}
+
+dropdownExpandButton.onclick = function() {
+    let isOpen = dropdownOptionContainer.classList.contains('hide')
+    if (!isOpen) {
+        dropdownExpandButton.innerHTML = 'expand_more'
+        dropdownOptionContainer.classList.add('hide')
+    } else {
+        dropdownExpandButton.innerHTML = 'expand_less'
+        dropdownOptionContainer.classList.remove('hide')
+    }
+}
+
+let setDropdown = function(option) {
+    dropdown.querySelector('div h4').innerHTML = option.querySelector('h4').innerHTML
+    dropdown.querySelector('div p').innerHTML = option.querySelector('p').innerHTML
+    dropdown.setAttribute('data-ID', option.getAttribute('data-ID'))
+
+    for (let option of dropdownOptions) {
+        option.classList.remove('active')
+    }
+    option.classList.add('active')
+
+    dropdownExpandButton.innerHTML = 'expand_more'
+    dropdownOptionContainer.classList.add('hide')
+}
+
+for (let option of dropdownOptions) {
+    option.onclick = function() {
+        setDropdown(option);
+    }
+}
+setDropdown(dropdownOptions[0])
+
+let createQuiz = async function() {
+    return await fetch('/api/quiz/run', {
+        method: 'POST',
+        body: JSON.stringify({
+            quizID: parseInt(document.querySelector('body').getAttribute('data-quizID')),
+            classID: parseInt(dropdown.getAttribute('data-ID'))
+        })
+    }).then((data) => {
+        return data.text();
+    })
+}
+
+startButton.onclick = async function() {
+    let data = await createQuiz();
+    window.location.pathname = '/quiz/' + data
+}
+
+</script>
+
+</html>

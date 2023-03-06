@@ -1,0 +1,178 @@
+{% extends 'dashboard/base.html' %}
+
+{% block modal %}
+
+<div class="create-class">
+    <div class="modal-header">
+        <h2>New Classroom</h2>
+        <a href="/classes"><span class="material-symbols-outlined">close</span></a>
+    </div>
+    <p style="margin: 3px 0 0 0; opacity: 40%;">You can change all this information later.</p>
+    <hr>
+    <form method="post">
+        <div id="create-class-page1" style="display: flex; flex-direction: column; gap: 8px">
+            Classroom Name
+            <input class="modal-input" type="text" id="name" name="name" placeholder="Computer Science, Biology, Maths, etc." required>
+            Classroom Age Group
+            <input class="modal-input" type="text" id="age-group" name="age-group" placeholder="Year 13, Year 12, Year 11, etc." required>
+            Classroom Header Image
+            <div class="file-input">
+                <label for="header-image">Choose</label>
+                <p>No file selected</p>
+                <input type="file" id="header-image" name="header-image" required>   
+            </div>
+            <hr>
+            Add Members
+            <div class="members">
+                <p>James Day</p>
+                <p>James Day</p>
+                <p>James Day</p>
+                <div class="add-members">
+                    <span class="material-symbols-outlined">add</span>
+                    <div class="member-selection" style="left: 0; bottom: 0;">
+                        <div class="search">
+                            <input type="text" placeholder="Search...">
+                            <span class="material-symbols-outlined">search</span>
+                        </div>
+                        <hr>
+                        <div class="options">
+                            <div class="item">
+                                James Day
+                                <div class="checkbox">
+                                    <span class="material-symbols-outlined">check</span>
+                                </div>
+                            </div>
+                            <div class="item">
+                                MrBigLong LongName
+                                <div class="checkbox">
+                                    <span class="material-symbols-outlined">check</span>
+                                </div>
+                            </div>
+                            <div class="item">
+                                James Day
+                                <div class="checkbox">
+                                    <span class="material-symbols-outlined">check</span>
+                                </div>
+                            </div>
+                            <div class="item">
+                                James Day
+                                <div class="checkbox">
+                                    <span class="material-symbols-outlined">check</span>
+                                </div>
+                            </div>
+                            <div class="item">
+                                James Day
+                                <div class="checkbox">
+                                    <span class="material-symbols-outlined">check</span>
+                                </div>
+                            </div>
+                            <div class="item">
+                                James Day
+                                <div class="checkbox">
+                                    <span class="material-symbols-outlined">check</span>
+                                </div>
+                            </div>
+                            <div class="item">
+                                James Day
+                                <div class="checkbox">
+                                    <span class="material-symbols-outlined">check</span>
+                                </div>
+                            </div>
+                            <div class="item">
+                                James Day
+                                <div class="checkbox">
+                                    <span class="material-symbols-outlined">check</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="submit-area">
+                <a href="/classes">Cancel</a>
+                <input type="submit" value="Create">
+            </div>
+        </div>
+        <div class="bottom-area">
+        </div>
+    </form>
+</div>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="classes-topbar">
+    <h2 class="title">Classes</h2>
+    {% if g.user['AccountType'] == 'teacher' %}
+        <div id="new-class-button"><span class="material-symbols-outlined">add</span>New Class</div>
+    {% endif %}
+</div>
+    
+<div class="classes">
+    <div class="no-classes-warning" style="display: none;">
+        <span class="material-symbols-outlined">question_mark</span>
+        <h2>You are not in any classes!</h2>
+        <p>Ask your teachers to invite you to some to get started.</p>
+    </div>
+
+    <!-- <a href="/home">
+        <div class="class">
+            <div class="gradient"></div>
+            <img src="static/uploads/HomeBanner.png">
+            <h4 class="subject_name">Computer Science</h4>
+            <div class="lower-text">
+                <p class="year_group">Year 13</p>
+                <p class="student_count">13 students</p>    
+            </div>
+        </div>
+    </a> -->
+    {% for class in classes %}
+        <a href="{{ 'classes/' + (class['ID']|string) }}">
+            <div class="class">
+                <div class="gradient"></div>
+                <img src="{{ url_for('static', filename=('classes/' + (class['ID']|string) + '.jpg')) }}">
+                <h4 class="subject_name">{{ class['ClassName'] }}</h4>
+                <div class="lower-text">
+                    <p class="year_group">{{ class['ClassGroup'] }}</p>
+                    <p class="student_count">{{ (class['MemberCount']|string) + ' member' + ('s' if class['MemberCount'] > 1 else '') }}</p>    
+                </div>
+            </div>
+        </a>
+    {% endfor %}
+    <!--
+    <div class="class">
+        <div class="gradient"></div>
+        <img src="static/uploads/HomeBanner.png">
+        <h4 class="subject_name">Computer Science</h4>
+        <div class="lower-text">
+            <p class="year_group">Year 13</p>
+            <p class="student_count">13 students</p>    
+        </div>
+    </div>
+    <div class="class">
+        <div class="gradient"></div>
+        <img src="static/uploads/HomeBanner.png">
+        <h4 class="subject_name">Computer Science</h4>
+        <div class="lower-text">
+            <p class="year_group">Year 13</p>
+            <p class="student_count">13 students</p>    
+        </div>
+    </div>
+    <div class="class">
+        <div class="gradient"></div>
+        <img src="static/uploads/HomeBanner.png">
+        <h4 class="subject_name">Computer Science</h4>
+        <div class="lower-text">
+            <p class="year_group">Year 13</p>
+            <p class="student_count">13 students</p>    
+        </div>
+    </div>
+    <div class="new-class" id="new-class-button">
+        <p class="material-symbols-outlined">add</p>
+        <h4 class="subject_name">Create a class</h4>
+    </div> -->
+</div>
+
+{% endblock %}

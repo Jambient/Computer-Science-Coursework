@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Qearn</title>
+    <link rel="stylesheet" href="/static/quizzes.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+</head>
+<body>
+
+<img src="/static/uploads/LandingBackgroundRight1.svg" style="top: 0; height: 80%; right: 0; z-index: -1; position: absolute">
+<img src="/static/uploads/LandingBackgroundRight2.svg" style="top: 0; height: 30%; right: 0; z-index: -1; position: absolute">
+
+<nav>
+    <div class="title-box">
+        <img src="/static/uploads/QearnLogo.png">
+        <h1>quizzes</h1>
+    </div>
+    <div class="account-box">
+        <h4>{{ g.user['FirstName'] }} {{ g.user['LastName'] }}</h4>
+        <img class="profile-img" src="{{ url_for('static', filename=('users/' + (g.user['ID']|string) + '.jpg')) }}">
+    </div>
+</nav>
+
+<section class="search-section">
+    <div>
+        <h1>What are you looking for?</h1>
+        <form>
+            <div class="search-box">
+                <input name="q" placeholder="Computer Science" value="{{ query }}">
+                <div class="underline"></div>
+                <span class="material-symbols-outlined">search</span>
+            </div>
+        </form>
+    </div>
+    <div class="filter">
+    </div>
+</section>
+
+<section class="results">
+    {% for quiz in quizzes %}
+        <div class="result-card">
+            <div class="image">
+                <img src="{{ url_for('static', filename=('quizzes/' + (quiz['ID']|string) + '.jpg')) }}">
+            </div>
+            <h1 class="title">{{ quiz['Name'] }}</h1>
+            <div class="extra-data">
+                <p class="question-count">{{ (quiz['QuestionCount']|string) + ' question' + ('s' if quiz['QuestionCount'] != 1 else '') }}</p>
+                <p class="plays-count">{{ (quiz['Plays']|string) + ' play' + ('s' if quiz['Plays'] != 1 else '') }}</p>
+            </div>
+            <a class="play-button" href="{{ '/quizzes/' + (quiz['ID']|string) }}">View Quiz</a>
+        </div>
+    {% endfor %}
+</section>
+
+</body>
+<script src="/static/landing.js"></script>
+</html>

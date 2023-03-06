@@ -1,0 +1,117 @@
+body {
+    background-color: rgb(250, 250, 250);
+    overflow: hidden !important;
+    /* margin-top: 20px;
+    margin-left: 40px;
+    margin-right: 40px; */
+    margin: 0px;
+}
+
+.index_topbar {
+    list-style-type: none;
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Readex Pro';
+    padding-left: 40px;
+    padding-right: 40px;
+}
+
+.index_topbar .center_buttons {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    font-size: 20px;
+}
+
+.center_buttons a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.center_buttons p {
+    color: rgb(151, 151, 151);
+    margin-bottom: 7px;
+    opacity: 60%;
+}
+.center_buttons div {
+    background-color: rgb(107,174,126);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    opacity: 0%;
+}
+
+.center_buttons .active p {
+    color: rgb(107,174,126);
+    opacity: 100%;
+}
+.center_buttons .active div {
+    opacity: 100%;
+}
+
+
+.index_topbar .account_buttons {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.index_topbar a {
+    text-decoration: none;
+}
+
+.school_input {
+    width: 16vw;
+    height: 3vw;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    border: none;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+    padding-left: 10px;
+    font-size: 1vw;
+}
+
+.school_submit {
+    width: 7vw;
+    height: 100%;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border: none;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+    background-color: rgb(107,174,126);
+    color: rgb(250, 250, 250);
+    font-size: 1vw;
+}
+
+.sign-up_button {
+    background-color: rgb(107,174,126);
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border-radius: 1000px;
+}
+
+.main_buttons a {
+    text-decoration: none;
+}
+
+.get-started_button {
+    background-color: white;
+    padding-left: 25px;
+    padding-right: 25px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    border-radius: 1000px;
+}
+
+.view-quizzes_button {
+    padding-left: 25px;
+    padding-right: 25px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    border-radius: 1000px;
+    outline: 3px solid white;
+    outline-offset: -3px;
+}

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="static/auth_style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+<title>Register</title>
+</head>
+<body>
+
+<div class="side-panel">
+    <form enctype="multipart/form-data" method="POST">
+        <div class="page hide" id="accountType">
+            <img class="logo" src="/static/uploads/QearnLogo.png" style="margin-bottom: 20px;">
+            <h1 class="title">Account Type</h1>
+            <p class="description">Are you a student or a teacher?</p>
+            <label for="student-radio-button">
+                <div class="option-card">
+                    <span class="material-symbols-outlined">person</span>
+                    <div>
+                        <h3>I'm a student</h3>
+                        <p>using Qearn to expand my learning.</p>
+                    </div>
+                    <input id="student-radio-button" name="account-type" type="radio" value="student">
+                </div>
+            </label>
+            <label for="teacher-radio-button">
+                <div class="option-card">
+                    <span class="material-symbols-outlined">supervisor_account</span>
+                    <div>
+                        <h3>I'm a teacher</h3>
+                        <p>using Qearn to teach other students.</p>
+                    </div>
+                    <input id="teacher-radio-button" name="account-type" type="radio" value="teacher">
+                </div>
+            </label>
+            <p class="warning hide">You must choose one of the above options</p>
+            <button type="button">Continue</button>
+            <p style="margin-top: 20px;" >Already have an account? <a class="link" href="/login">Log in</a></p>
+        </div>
+        <div class="page hide" id="details">
+            <img class="logo" src="/static/uploads/QearnLogo.png" style="margin-bottom: 20px;">
+            <h1 class="title">Your details</h1>
+            <p class="description">Please provide your name and email.</p>
+
+            <label for="first-name">First name*</label>
+            <input id="first-name" name="first-name" type="text" placeholder="Enter your first name" required>
+
+            <label for="last-name">Last name*</label>
+            <input id="last-name" name="last-name" type="text" placeholder="Enter your last name" required>
+
+            <label for="email">Email*</label>
+            <input id="email" name="email" type="email" placeholder="Enter your email" required>
+
+            <p class="warning hide">You must choose one of the above options</p>
+            <button type="button">Continue</button>
+        </div>
+        <div class="page hide" id="password">
+            <img class="logo" src="/static/uploads/QearnLogo.png" style="margin-bottom: 20px;">
+            <h1 class="title">Choose a password</h1>
+            <p class="description">It must meet the requirements.</p>
+
+            <label for="password">Password*</label>
+            <input id="password" type="password" name="password" placeholder="Choose a password">
+
+            <label for="confirm-password">Confirm password*</label>
+            <input id="confirm-password" type="password" placeholder="Confirm a password">
+
+            <p class="warning hide">You must choose one of the above options</p>
+            <button type="button">Continue</button>
+        </div>
+        <div class="page hide" id="school-code">
+            <img class="logo" src="/static/uploads/QearnLogo.png" style="margin-bottom: 20px;">
+            <h1 class="title">Join a school</h1>
+            <p class="description">Enter the school code for your school.</p>
+
+            <div>
+                <input size="1" maxlength="1">
+                <input size="1" maxlength="1">
+                <input size="1" maxlength="1">
+                <input size="1" maxlength="1">
+                <input size="1" maxlength="1">
+                <input size="1" maxlength="1">
+            </div>
+            <input type="hidden" name="school-code" style="display: none;" value="1">
+
+            <p class="warning hide">You must choose one of the above options</p>
+            <button type="submit">Create Account</button>
+        </div>
+    </form>
+    <div class="page-progress" id="page-progress">
+        <div class="active"></div>
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+    <div id="back-button" class="back-button hide">
+        <span class="material-symbols-outlined">chevron_left</span>
+        Back
+    </div>
+    <div style="display: none;">
+        <a href="/"><img src="/static/uploads/QearnLogo.png" style="margin-bottom: 20px;"></a>
+
+        {% if request.args.get('type') == 'student' %}
+            <div class="title">
+                <h1 style="font-weight: 600; font-size: 2vw; margin: 0px;">Student Sign up.</h1>
+                <a class="link" href="/register?type=teacher">Not a student?</a>
+            </div>
+        {% else %}
+            <div class="title">
+                <h1 style="font-weight: 600; font-size: 2vw; margin: 0px;">Teacher Sign up.</h1>
+                <a class="link" href="/register?type=student">Not a teacher?</a>
+            </div>
+        {% endif %}
+
+        <p style="opacity: 50%; margin-bottom: 50px; width: 80%;">Create an account using your school email.</p>
+
+        {% for message in get_flashed_messages() %}
+            <p style="color: red;">{{ message }}</p>
+        {% endfor %}
+
+        <form method="post">
+            <p style="opacity: 50%;" >Your e-mail</p>
+            <input class="input-box" type="text" id="email" name="email" required>    
+            <p style="opacity: 50%;" >Password</p>
+            <input class="input-box" type="password" id="password" name="password" required>
+            <p style="opacity: 50%;" >School Code</p>
+            <input class="input-box" type="text" id="school_code" name="school_code" required>
+            <input class="submit-button" type="submit" value="Sign up">
+        </form>
+
+        <div style="width: 100%; display: flex; flex-direction: column; justify-content: center; text-align: center;">
+            <p style="margin-bottom: 10px; margin-top: 0px;" >Already have an account? <a class="link" href="/login">Log in</a></p>
+        </div>
+    </div>
+    
+</div>
+
+<div class="content_display">
+
+    <div class="news-container">
+        <div class="active">
+            <img style="object-fit: contain; height: 60%; margin-top: 40px; margin-bottom: 20px;" src="static/uploads/AuthPageNews.png">
+            <h1 style="color: white; font-size: 25px; margin: auto; margin-bottom: 0px;">Qearn has been released!</h1>
+            <p style="color: white; opacity: 40%; font-size: 16px; width: 50%; text-align: center; margin: auto; margin-top: 10px;" >Thank you to the man who sold 8 whole kidneys just to donate to my patreon and everyone else who has supported this project.</p>
+        </div>
+    </div>
+
+    <div class="progress-bar">
+        <div class="active"></div>
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+
+</div>
+
+
+</body>
+
+<script src="/static/register.js"></script>
+
+</html> 

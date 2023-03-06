@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Qearn</title>
+    <link rel="stylesheet" href="/static/landing.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+</head>
+<body>
+
+<img src="/static/uploads/LandingBackgroundRight1.svg" style="margin-top: -10px; height: 80%; right: 0; z-index: -1; position: absolute">
+<img src="/static/uploads/LandingBackgroundRight2.svg" style="margin-top: -10px; height: 30%; right: 0; z-index: -1; position: absolute">
+<img src="/static/uploads/LandingBackgroundLeft1.svg" style="margin-top: -10px; height: 30%;; left: 0; z-index: -1; position: absolute">
+
+<nav>
+    <h1 style="color: var(--green-sea)">qearn</h1>
+    <div class="auth-buttons">
+        <a class="login" href="/login">Login</a>
+        <a href="/register?type=student"><div class="filled-button">Sign up</div></a>
+    </div>
+</nav>
+
+<section class="welcome-section">
+    <div class="left-side">
+        <h1>Learning through<br>quizzing, <span class="underlined-special">made fun.<img src="/static/uploads/LandingTextUnderline.svg"></span></h1>
+        <p>The best solution to bring quizzing for all levels of ability into your school.</p>
+        <a href="/register?type=student" style="width: fit-content; position: relative; text-decoration: none;">
+            <div class="filled-button" style="font-size: 1.2vw; gap: 10px; display: flex; align-items: center;">
+                Get Started
+                <span class="material-symbols-outlined">arrow_forward</span>
+            </div>
+            <img src="static/uploads/Arrow.svg">
+        </a>
+    </div>
+    <div class="img-container">
+        <img src="static/uploads/landing_page.gif">
+    </div>
+</section>
+
+<section class="our-offer-section">
+
+    <h2 class="section-subtext">WHAT WE DO</h2>
+    <h1 class="section-title">Our Offer</h1>
+    <p class="section-description">Our goal is to give teachers a way to enjoy a fun quiz while still also providing students a way to improve on their skills. We also want this system to be as accessible as it can be to all abilities of students</p>
+
+    <div class="offers-container">
+        <div class="offer-frame">
+            <span class="material-symbols-outlined">school</span>
+            <h1>Learn</h1>
+            <p>Access tons of free quizzes for any lesson.</p>
+        </div>
+        <div class="offer-frame">
+            <span class="material-symbols-outlined">reviews</span>
+            <h1>Review</h1>
+            <p>Go over previous quizzes and learn from mistakes.</p>
+        </div>
+        <div class="offer-frame">
+            <span class="material-symbols-outlined">construction</span>
+            <h1>Create</h1>
+            <p>Create quizzes using our easy and simple tool.</p>
+        </div>
+    </div>
+
+</section>
+
+</body>
+<script src="/static/landing.js"></script>
+</html>

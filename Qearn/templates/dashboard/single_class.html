@@ -1,0 +1,21 @@
+{% extends 'dashboard/base.html' %}
+
+{% block content %}
+
+<div class="class-header">
+    <img src="{{ url_for('static', filename=('classes/' + (classData['ID']|string) + '.jpg')) }}">
+    <a href="/classes"><div class="all-classes-button">
+        <span class="material-symbols-outlined">chevron_left</span>
+        All Classes
+    </div></a>
+    <div class="gradient" style="bottom: 0;"></div>
+    <h1>{{ classData['ClassName'] }}</h1>
+    <h3>{{ classData['ClassGroup'] }}</h3>
+</div>
+
+<div class="active-quiz-banner">
+    <p class="no-quiz">There is no quiz being currently run for this class</p>
+    <a href="/quizzes">Find a quiz</a>
+</div>
+
+{% endblock %}

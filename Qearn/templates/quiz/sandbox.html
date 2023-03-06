@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Sandbox</title>
+</head>
+<body>
+
+<input id="quiz-id" placeholder="Quiz ID">
+<input id="submit-button" type="submit" value="Start Quiz">
+<h4 id="status-text"></h4>
+<p id="extra-data"></p>
+
+</body>
+<script>
+    let quizIdInput = document.getElementById('quiz-id')
+    let submitButton = document.getElementById('submit-button')
+    let statusText = document.getElementById('status-text')
+    let extraDataText = document.getElementById('extra-data')
+
+    let createQuiz = async function() {
+        return await fetch('/api/quiz/run', {
+            method: 'POST',
+            body: JSON.stringify({
+                quizID: parseInt(quizIdInput.value),
+                classID: 1
+            })
+        }).then((data) => {
+            statusText.innerHTML = data.statusText;
+            return data.text();
+        })
+    }
+
+    let onSubmitClick = async function() {
+        data = await createQuiz();
+        extraDataText.innerHTML = data
+    }
+
+    submitButton.onclick = onSubmitClick   
+</script>
+</html>

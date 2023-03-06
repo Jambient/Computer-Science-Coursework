@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="/static/quiz_style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+</head>
+<body>
+
+<div class="settings">
+    <span class="material-symbols-outlined">settings</span>
+</div>
+
+<div class="timer">
+    <h1></h1>
+</div>
+
+<div class="pages">
+    <div class="page" id="pre-start" style="display: none;">
+        <img src="/static/uploads/QearnLogo.png">
+        <div class="quiz-data">
+            <div class="quiz-thumbnail">
+                <img src="https://images1.content-hci.com/commimg/myhotcourses/blog/post/myhc_89683.jpg">
+                <div class="gradient"></div>
+                <h1>ALL ABOUT THE INTERNET</h1>
+                <p class="class-name">Computer Science</p>
+                <p class="class-group">Year 13</p>
+            </div>
+        </div>
+        
+        <p>Waiting for teacher...</p>
+    </div>
+
+    <div class="page hide" id="question">
+        <div class="question-data">
+            <img src="https://images1.content-hci.com/commimg/myhotcourses/blog/post/myhc_89683.jpg">
+            <div class="data-box">
+                <p><span id="current-question">Question 1</span> <span id="question-total">of 10</span></p>
+                <h1>Question String</h1>
+            </div>
+        </div>
+        <div class="answer">
+            <div id="Basic" class="hide">
+                <!-- <button>Answer 1</button>
+                <button>Answer 2</button>
+                <button>Answer 3</button>
+                <button>Answer 4</button> -->
+            </div>
+        </div>
+    </div>
+
+    <div class="page hide" id="waiting">
+        <div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+        <h1>Waiting for other students...</h1>
+    </div>
+    <div class="page answer-status-page hide" id="countdown">
+        <div>
+            <h1 style="color: var(--green-sea); margin: 0">3</h1>
+        </div>
+    </div>
+    <div class="page answer-status-page hide" id="correct" style="background: #00C660;">
+        <div>
+            <span class="material-symbols-outlined" style="color: #00C660;">check</span>
+        </div>
+        <h1>CORRECT</h1>
+        <h3>+800</h3>
+    </div>
+    <div class="page answer-status-page hide" id="incorrect" style="background: #BB0000;">
+        <div>
+            <span class="material-symbols-outlined" style="color: #BB0000;">clear</span>
+        </div>
+        <h1>INCORRECT</h1>
+        <h3>You still have a chance!</h3>
+    </div>
+
+</div>
+
+</body>
+
+<script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+<script src="/static/student-quiz.js"></script>
+
+</html> 

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Quiz</title>
+    
+    <link rel="stylesheet" href="/static/quizzes.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+</head>
+<body>
+
+<div class="modal" style="display: none;">
+    <div class="question-edit">
+        <div class="modal-topbar">
+            <h3>Edit Question 1</h3>
+            <span class="material-symbols-outlined">close</span>
+        </div>
+        <label for="question-title">Question Title</label>
+        <input style="width: 100%; margin-top: 5px;" id="question-title" type="text" placeholder="Enter your question title.">
+        
+        <label for="question-type">Question Type</label>
+        <div class="dropdown" style="margin-top: 5px; border: 2px solid rgba(0, 0, 0, 0.08); background: none; margin-bottom: 20px; width: 100%;">
+            <div>
+                <h4></h4>
+                <p></p>
+            </div>
+            <span class="material-symbols-outlined">expand_more</span>
+            <div class="options hide">
+                <div>
+                    <h4>Basic</h4>
+                    <p>The user chooses between 2 - 4 answers.</p>
+                </div>
+                <div>
+                    <h4>True or False</h4>
+                    <p>The user chooses between 2 options.</p>
+                </div>
+                <div>
+                    <h4>Slider</h4>
+                    <p>The user chooses a value in a given range.</p>
+                </div>
+            </div>
+        </div>
+
+        <label style="margin-bottom: 10px;">Answer Layout</label>
+
+        <div class="user-answer-container">
+            <div class="type-container" id="basic">
+                <div>
+                    <span>A</span>
+                    <div>
+                        <input type="text" placeholder="Answer A">
+                        <div>
+                            <span class="material-symbols-outlined correct-button">check</span>
+                            <hr></hr>
+                            <span class="material-symbols-outlined delete-button">close</span>
+                        </div>
+                    </div>
+                </div>
+                <div id="add-answer-button">
+                    <span class="material-symbols-outlined">add</span>
+                </div>
+            </div>
+         </div>
+         <div class="modal-footer">
+            <p>Cancel</p>
+            <button type="text">Save Changes</button>
+         </div>
+    </div>
+</div>
+
+<div class="cover"></div>
+
+<img class="hide" src="/static/uploads/LandingBackgroundRight1.svg" style="top: 0; height: 80%; right: 0; z-index: -1; position: absolute">
+<img class="hide" src="/static/uploads/LandingBackgroundRight2.svg" style="top: 0; height: 30%; right: 0; z-index: -1; position: absolute">
+
+<nav>
+    <div class="title-box">
+        <img src="/static/uploads/QearnLogo.png">
+        <h1>quizzes</h1>
+    </div>
+    <div class="account-box">
+        <h4 style="color: black;">{{ g.user['FirstName'] }} {{ g.user['LastName'] }}</h4>
+        <img class="profile-img" src="{{ url_for('static', filename=('users/' + (g.user['ID']|string) + '.jpg')) }}">
+    </div>
+</nav>
+
+<section class="steps">
+    <div class="active">
+        <p>1</p>
+        Basic Information
+    </div>
+    <span class="material-symbols-outlined">chevron_right</span>
+    <div>
+        <p>2</p>
+        Settings
+    </div>
+    <span class="material-symbols-outlined">chevron_right</span>
+    <div>
+        <p>3</p>
+        Questions
+    </div>
+</section>
+
+<form class="pages">
+    <div id="basic-info" class="hide" style="width: 35%;">
+        <h1 class="title">Basic Information</h1>
+        <p class="description">Settings to make finding and understanding your quiz easier.</p>
+
+        <label for="name">Quiz Name <span>*</span></label>
+        <input maxlength="120" id="name" type="text" placeholder="e.g. The endless universe">
+
+        <label for="name">Quiz Description <span>*</span></label>
+        <textarea maxlength="300" id="name" type="textarea" placeholder="e.g. A quiz made to test just how much you know about our universe." rows="4"></textarea>
+    
+        <label for="name">Quiz Description <span>*</span></label>
+        <textarea maxlength="300" id="name" type="textarea" placeholder="e.g. A quiz made to test just how much you know about our universe." rows="4"></textarea>
+        <label for="name">Quiz Description <span>*</span></label>
+        <textarea maxlength="300" id="name" type="textarea" placeholder="e.g. A quiz made to test just how much you know about our universe." rows="4"></textarea>
+        <label for="name">Quiz Description <span>*</span></label>
+        <textarea maxlength="300" id="name" type="textarea" placeholder="e.g. A quiz made to test just how much you know about our universe." rows="4"></textarea>
+    </div>
+    <div id="questions">
+        <h1 class="title">Questions</h1>
+        <p class="description">The actual questions for your quiz</p>
+        <div class="questions">
+            <div id="question-layout" class="hide">
+                <div>
+                    <span class="material-symbols-outlined">drag_indicator</span>
+                    <h2>Which option best describes the internet?</h2>
+                </div>
+                <span class="close material-symbols-outlined">delete_forever</span>
+            </div>
+            <div>
+                <div>
+                    <span class="material-symbols-outlined">drag_indicator</span>
+                    <h2>What device forwards packets from one network to another? This is a very long question with extra words</h2>
+                </div>
+                <span class="close material-symbols-outlined">delete_forever</span>
+            </div>
+        </div>
+    </div>
+</form>
+
+<section class="footer-bar">
+    <hr>
+    <button type="button">Continue</button>
+</section>
+    
+</body>
+
+<script>
+let dropdown = document.getElementsByClassName('dropdown')[0]
+let dropdownExpandButton = dropdown.querySelector('span')
+let dropdownOptionContainer = dropdown.querySelector('.options')
+let dropdownOptions = dropdown.querySelectorAll('.options div')
+
+dropdownExpandButton.onclick = function() {
+    let isOpen = dropdownOptionContainer.classList.contains('hide')
+    if (!isOpen) {
+        dropdownExpandButton.innerHTML = 'expand_more'
+        dropdownOptionContainer.classList.add('hide')
+    } else {
+        dropdownExpandButton.innerHTML = 'expand_less'
+        dropdownOptionContainer.classList.remove('hide')
+    }
+}
+
+let setDropdown = function(option) {
+    dropdown.querySelector('div h4').innerHTML = option.querySelector('h4').innerHTML
+    dropdown.querySelector('div p').innerHTML = option.querySelector('p').innerHTML
+
+    for (let option of dropdownOptions) {
+        option.classList.remove('active')
+    }
+    option.classList.add('active')
+
+    dropdownExpandButton.innerHTML = 'expand_more'
+    dropdownOptionContainer.classList.add('hide')
+}
+
+for (let option of dropdownOptions) {
+    option.onclick = function() {
+        setDropdown(option);
+    }
+}
+setDropdown(dropdownOptions[0])
+
+</script>
+
+<script src="/static/create-quiz.js"></script>
+
+</html>

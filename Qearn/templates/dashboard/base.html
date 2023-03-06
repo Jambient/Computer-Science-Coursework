@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="/static/dashboard_style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+</head>
+<body>
+
+<div class="modal hide" id="modal">
+    <div class="modal-content">
+        {% block modal %}{% endblock %}
+    </div>
+</div>
+
+<div class="sidebar">
+    <div class="website-title">
+        <img src="/static/uploads/QearnLogo.png">
+        <h1>qearn</h1>
+    </div>
+    <hr>
+    <br>
+    <p class="sidebar-title" style="margin-top: 30px">Menu</p>
+    <div class="option" data-area="home">
+        <div class="icon-div"><p class="material-symbols-outlined">home</p></div>
+        Home
+        <div class="selected"></div>
+    </div>
+    <div class="option" data-area="classes">
+        <div class="icon-div"><p class="material-symbols-outlined">school</p></div>
+        Classes
+        <div class="selected"></div>
+    </div>
+    <div class="option" data-area="history">
+        <div class="icon-div"><p class="material-symbols-outlined">assignment</p></div>
+        History
+        <div class="selected"></div>
+    </div>
+    <!-- <div class="option" data-area="quizzes">
+        <div class="icon-div"><p class="material-symbols-outlined">analytics</p></div>
+        Quizzes
+        <div class="selected"></div>
+    </div> -->
+    <p class="sidebar-title">General</p>
+    <!-- <div class="option" data-area="help">
+        <div class="icon-div"><p class="material-symbols-outlined">help</p></div>
+        Help
+        <div class="selected"></div>
+    </div> -->
+    <div class="option" data-area="settings">
+        <div class="icon-div"><p class="material-symbols-outlined">settings</p></div>
+        Settings
+        <div class="selected"></div>
+    </div>
+
+    <img class="sidebar-wave" src="/static/uploads/SidebarWave.svg">
+
+    <a href="/logout" class="logout">
+        <div>
+            <span class="material-symbols-outlined">logout</span>
+            Log out
+        </div>
+    </a>
+
+    <!-- <hr style="position: absolute; bottom: 90px;"> -->
+    <!-- <div class="option"><span class="material-symbols-outlined">dashboard</span>Dashboard</div>
+    <div class="option"><span class="material-symbols-outlined">school</span>Classes</div>
+    <div class="option"><span class="material-symbols-outlined">assignment</span>History</div>
+    <div class="option"><span class="material-symbols-outlined">analytics</span>Quizzes</div>
+    <div class="option"><span class="material-symbols-outlined">settings</span>Settings</div> -->
+</div>
+
+<div class="content-container">
+
+    {% block content %}{% endblock %}
+
+</div>
+
+<div class="info-container">
+    <div class="profile">
+        <img class="profile-img" src="/static/uploads/temp_pfp.png">
+        <div>
+            <p class="name">James Day</p>
+            <p class="school">Battle Abbey School</p>    
+        </div>
+    </div>
+</div>
+
+</body>
+
+<script src="/static/dashboard_js.js"></script>
+
+</html> 

@@ -1,0 +1,4 @@
+include Qearn/schema.sql
+graft Qearn/static
+graft Qearn/templates
+global-exclude *.pyc

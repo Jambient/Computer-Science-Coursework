@@ -1,0 +1,737 @@
+:root {
+    --green-sea: #16A086;
+}
+
+body {
+    margin: 80px;
+    margin-top: 10px;
+    margin-bottom: 0px;
+    font-family: 'Readex Pro' !important;
+}
+
+.material-symbols-outlined {
+    font-variation-settings:
+      'FILL' 1,
+      'wght' 400,
+      'GRAD' 0,
+      'opsz' 48
+}
+
+.hide {
+    display: none !important;
+}
+
+.modal {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 20px;
+    top: 0;
+    width: 100%;
+    background-color: rgba(184, 232, 221, 0);
+    box-shadow: none;
+    margin-left: -80px;
+    padding-left: 80px;
+    padding-right: 80px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    z-index: 1000;
+    box-sizing: border-box;
+    position: fixed;
+    transition: background-color 0.3s;
+}
+nav.scrolled {
+    background: rgba(184, 232, 221, 1);
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+}
+
+nav .title-box {
+    display: flex;
+    color: var(--green-sea);
+    gap: 15px;
+}
+nav .title-box img {
+    width: 50px;
+    object-fit: contain;
+}
+
+nav .account-box {
+    display: flex;
+    gap: 15px;
+    color: white;
+    align-items: center;
+}
+nav .account-box img {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    border-radius: 50%;
+}
+
+.search-section {
+    height: 300px;
+    margin-top: 110px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    /* flex-wrap: wrap; */
+    gap: 50px;
+}
+.search-section h1 {
+    font-size: 2.6vw;
+    margin-bottom: 50px;
+}
+
+.search-box {
+    width: 600px;
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    align-items: center;
+}
+.search-box input {
+    width: 100%;
+    border: none;
+    font-size: 25px;
+    margin-bottom: 10px;
+    opacity: 90%;
+    background: none;
+}
+.search-box input:focus {
+    outline: none;
+}
+.search-box .underline {
+    position: absolute;
+    bottom: 0;
+    background: var(--green-sea);
+    height: 2px;
+    width: 100%;
+}
+.search-box span {
+    opacity: 50%;
+    user-select: none;
+    font-size: 30px;
+}
+
+.filter {
+    width: 500px;
+    height: 220px;
+    background: white;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+}
+
+.results {
+    display: flex;
+    margin-left: -80px;
+    width: 100%;
+    background: rgb(242, 242, 242);
+    padding: 30px 80px 30px 80px;
+}
+
+.result-card .image {
+    overflow: hidden;
+    width: 100%;
+    height: 40%;
+}
+.result-card .image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.result-card {
+    background: white;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+    width: 250px;
+    height: 350px;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+}
+.result-card .extra-data {
+    display: flex;
+    justify-content: space-between;
+    padding-left: 10px;
+    padding-right: 10px;
+    opacity: 50%;
+}
+.result-card .title {
+    padding-left: 10px;
+    padding-right: 10px;
+    margin: 0;
+    margin-top: 10px;
+    font-size: 20px;
+}
+.result-card .play-button {
+    background: var(--green-sea);
+    color: white;
+    width: calc(100% - 20px);
+    margin: 0 10px 0 10px;
+    bottom: 10px;
+    border-radius: 12px;
+    padding: 5px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    text-decoration: none;
+}
+
+/* single quiz page */
+hr {
+    opacity: 40%;
+}
+
+.header {
+    margin-top: 110px;
+    width: 100%;
+    overflow: hidden;
+    height: 300px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 20px;
+}
+.header > img {
+    width: 100%;
+    position: absolute;
+}
+.header > h1 {
+    color: white;
+    z-index: 2;
+    font-size: 40px;
+    width: 70%;
+    text-align: center;
+}   
+
+.darken {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: black;
+    top: 0;
+    opacity: 40%;
+}
+
+.quiz-data {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.data-container {
+    width: 40%;
+}
+.data-container > p {
+    margin: 0;
+    margin-bottom: 40px;
+    font-size: 20px;
+    opacity: 80%;
+}
+
+.owner {
+    display: flex;
+    gap: 10px;
+}
+.owner img {
+    width: 40px;
+    height: 100%;
+    border-radius: 50%;
+}
+.owner > div {
+    display: flex;
+    flex-direction: column;
+    color: rgba(0, 0, 0, 0.8);
+    justify-content: center;
+}
+.owner > div > h4 {
+    margin: 0;
+}
+.owner > div > h4:nth-child(2) {
+    opacity: 70%;
+}
+.quiz-data {
+    margin-bottom: 30px;
+}
+
+.questions {
+    display: flex;
+    margin-bottom: 100px;
+    flex-direction: column;
+    gap: 20px;
+}
+.questions > div {
+    background: rgba(0, 0, 0, 0.05);
+    padding: 30px 30px 30px 30px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.questions > div:hover {
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+.questions > h2 {
+    margin-bottom: 0;
+}
+.question-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.question {
+    width: 100%;
+    background: white;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+    border-radius: 20px;
+    display: flex;
+    padding: 20px;
+    gap: 5px;
+    justify-content: space-between;
+    align-items: center;
+    box-sizing: border-box;
+}
+.question > div:nth-child(1) > h2 {
+    margin: 0;
+    opacity: 80%;
+}
+.question > div:nth-child(1) > h3 {
+    margin: 0;
+    opacity: 50%;
+}
+.question > span {
+    font-size: 30px;
+    user-select: none;
+    cursor: pointer;
+}
+
+.questions > div > div {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+.questions > div > div > h2 {
+    margin: 0;
+}
+.questions > div span {
+    font-size: 25px;
+    opacity: 60%;
+    cursor: pointer;
+    user-select: none;
+}
+.questions > div .close:hover {
+    color: red;
+}
+
+.answers {
+    width: 95%;
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    gap: 10px;
+}
+.answers > div {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+    align-items: center;
+    padding: 15px;
+    box-sizing: border-box;
+}
+.answers > div > h3 {
+    margin: 0;
+    opacity: 80%;
+}
+
+.correct {
+    color: green;
+}
+.incorrect {
+    color: red;
+}
+
+.start-container {
+    padding: 12px;
+    background: white;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    height: fit-content;
+}
+.dropdown {
+    width: 280px;
+    background: rgb(240, 240, 240);
+    border-radius: 10px;
+    padding: 10px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+}
+.dropdown > div > h4 {
+    margin: 0;
+    margin-bottom: 3px;
+}
+.dropdown > div > p {
+    margin: 0;
+    opacity: 60%;
+}
+.dropdown > span {
+    font-size: 30px;
+    user-select: none;
+    cursor: pointer;
+}
+
+.start-button {
+    width: 100%;
+    background: var(--green-sea);
+    color: white;
+    padding: 10px;
+    box-sizing: border-box;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+.options {
+    position: absolute;
+    top: 115%;
+    width: 100%;
+    background: white;
+    left: 0;
+    border-radius: 10px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    z-index: 999;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    overflow: hidden;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+    padding: 5px;
+}
+.options > div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    border-radius: 5px;
+    color: rgb(50, 50, 50);
+}
+.options > div > h4 {
+    margin: 0;
+}
+.options > div > p {
+    margin: 0;
+    opacity: 65%;
+    margin-left: 20px;
+}
+.options > div:hover {
+    background: rgb(240, 240, 240);
+}
+.options > div.active {
+    background: var(--green-sea);
+    color: white;
+}
+
+/* create quiz page */
+.steps {
+    top: 100px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: fixed;
+    z-index: 999;
+    margin-left: -15px;
+}
+.steps > div {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-radius: 999px;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    box-sizing: border-box;
+}
+.steps > div > p {
+    width: 30px;
+    height: 30px;
+    border: 2px solid rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    margin: 0;
+}
+.steps > div {
+    color: rgba(0, 0, 0, 0.4);
+}
+
+.steps > div.active p {
+    background: var(--green-sea);
+    color: white;
+    border: none;
+}
+.steps > div.active {
+    color: rgba(0, 0, 0);
+}
+.steps > div:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+.steps > span {
+    opacity: 40%;
+}
+
+.pages {
+    margin-top: 140px;
+}
+.pages > div {
+    padding: 60px;
+    padding-top: 20px;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 120px;
+}
+.pages > div > .description {
+    opacity: 50%;
+    margin-top: 10px;
+    margin-bottom: 40px;
+}
+.pages > div > .title {
+    margin-bottom: 0;
+}
+.pages label {
+    margin-bottom: 10px;
+}
+.pages label span {
+    color: red;
+}
+.pages input[type=text], textarea, .modal input[type=text] {
+    padding: 10px;
+    font-family: 'Readex Pro';
+    border: 2px solid rgba(0, 0, 0, 0.08);
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 15px;
+    color: rgba(0, 0, 0, 0.9);
+    box-sizing: border-box;
+}
+.pages textarea {
+    resize: vertical;
+    max-height: 200px;
+}
+
+/*  */
+.footer-bar {
+    position: fixed;
+    bottom: 0;
+    width: calc(100% - 160px);
+    height: 100px;
+    display: flex;
+    align-items: center;
+    background: white;
+    z-index: 999;
+}
+.footer-bar hr {
+    opacity: 20%;
+    position: absolute;
+    top: 0px;
+    width: 100%;
+}
+.footer-bar button {
+    padding: 10px 30px 10px 30px;
+    border: none;
+    border-radius: 5px;
+    position: absolute;
+    right: 0;
+    font-size: 18px;
+    background: var(--green-sea);
+    color: white;
+    font-family: 'Readex Pro';
+    cursor: pointer;
+}
+.footer-bar button:disabled {
+    color: rgba(0, 0, 0, 0.4);
+    background: rgba(0, 0, 0, 0.1);
+    cursor: not-allowed;
+}
+
+/*  */
+.cover {
+    position: fixed;
+    width: 100%;
+    height: 160px;
+    background: white;
+    z-index: 10;
+    top: 0;
+}
+
+.user-answer-container #basic > div {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+.user-answer-container #basic > div > div {
+    width: 100%;
+}
+.user-answer-container #basic > div > div > input[type=text] {
+    margin-bottom: 0;
+    width: 100%;
+}
+.user-answer-container #basic > div {
+    flex: auto;
+    position: relative;
+}
+.user-answer-container #basic > div > span {
+    opacity: 50%;
+}
+.user-answer-container #basic > div > div > div {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    align-items: center;
+    display: flex;
+    width: 81px;
+    gap: 6px;
+}
+.user-answer-container #basic hr {
+    height: 90%;
+    opacity: 10%;
+    margin: 0;
+}
+.correct-button {
+    aspect-ratio: 1 / 1;
+    height: 80%;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    background: var(--green-sea);
+    color: white;
+    border-radius: 8px;
+}   
+.delete-button {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    opacity: 40%;
+    border-radius: 8px;
+    cursor: pointer;
+}
+.delete-button:hover {
+    color: red;
+}
+
+.question-edit {
+    width: 700px;
+    height: 500px;
+    background: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    border-radius: 12px;
+    padding: 20px;
+    box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
+}
+.question-edit .modal-topbar {
+    display: flex;
+    justify-content: space-between;
+    gap: 40px;
+    margin-bottom: 20px;
+    align-items: center;
+}
+.question-edit .modal-topbar h3 {
+    margin: 0;
+}
+.question-edit .modal-topbar span {
+    width: 30px;
+    height: 30px;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    cursor: pointer;
+}
+.modal-footer {
+    position: absolute;
+    bottom: 0;
+    margin-left: -20px;
+    width: 100%;
+    height: 70px;
+    background: rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: right;
+    padding-right: 20px;
+    box-sizing: border-box;
+    gap: 20px;
+}
+.modal-footer > button {
+    padding: 10px 20px 10px 20px;
+    border: none;
+    background: var(--green-sea);
+    border-radius: 10px;
+    color: white;
+    font-family: 'Readex Pro';
+    font-size: 15px;
+    cursor: pointer;
+}
+.modal-footer > p {
+    margin: 0;
+    opacity: 70%;
+    cursor: pointer;
+}
+.input-container {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+.input-container label {
+    white-space: nowrap;
+    opacity: 70%;
+}
+
+#add-answer-button {
+    justify-content: center;
+    height: 40px;
+    border: dotted 2px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+}
+
+.user-answer-container .type-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 5px;
+}
