@@ -3,9 +3,6 @@ venv/
 *.pyc
 __pycache__/
 
-instance/
-.idea/
-
 .pytest_cache/
 .coverage
 htmlcov/

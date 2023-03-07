@@ -791,3 +791,66 @@ body {
     position: absolute;
     left: 30%;
 }
+
+.settings-containers {
+    width: 100%;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.settings-containers > .container {
+    background: white;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    padding: 12px;
+}
+.container .title {
+    margin-bottom: 20px;
+    margin-top: 5px;
+}
+.container .profile-picture {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+.container .profile-picture img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+}
+.container .profile-picture div:nth-child(2) {
+    height: fit-content;
+    padding: 8px 12px 8px 12px;
+    background: rgba(22, 160, 134, 0.27);
+    border-radius: 10px;
+    color: rgb(14, 115, 96);
+}
+.container .profile-picture > div:nth-child(3) {
+    height: fit-content;
+    padding: 8px 12px 8px 12px;
+    border-radius: 10px;
+    color: rgb(14, 115, 96);
+    opacity: 80%;
+    color: rgba(255, 0, 0, 0.9);
+}
+.container .user-data {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, auto));
+    gap: 10px 50px;
+}
+.container .user-data > div {
+    display: flex;
+    flex-direction: column;
+}
+
+.container input[type=text] {
+    padding: 10px;
+    font-family: 'Readex Pro';
+    border: 2px solid rgba(0, 0, 0, 0.15);
+    border-radius: 8px;
+    margin-top: 5px;
+    font-size: 15px;
+    color: rgba(0, 0, 0, 0.9);
+    box-sizing: border-box;
+}
