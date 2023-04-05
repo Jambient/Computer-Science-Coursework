@@ -30,11 +30,11 @@ function clickedOption(element) {
 }
 
 // new classroom button
-var newClassroom = document.getElementById('new-class-button')
-var modal = document.getElementById('modal')
+// var newClassroom = document.getElementById('new-class-button')
+// var modal = document.getElementById('modal')
 
-newClassroom.onclick = function (element) {
-	element = this;
-	console.log('clicked new classroom button')
-	modal.classList.remove('hide')
-}
+// newClassroom.onclick = function (element) {
+// 	element = this;
+// 	console.log('clicked new classroom button')
+// 	modal.classList.remove('hide')
+// }

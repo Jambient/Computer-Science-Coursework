@@ -1,4 +1,5 @@
 let startButton = document.getElementById('start-button')
+let saveButton = document.querySelector('#end .save-btn')
 let UNIQUE_ID = null
 
 // get all pages
@@ -33,8 +34,16 @@ socket.on('id', (id) => {
     console.log('got id')
     UNIQUE_ID = id
 })
+socket.on('end', () => {
+    showPage('end')
+})
 
 startButton.onclick = function() {
     console.log('epic')
     socket.emit('start')
+}
+
+saveButton.onclick = function() {
+    console.log('saving quiz')
+    socket.emit('save')
 }

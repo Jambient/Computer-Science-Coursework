@@ -78,8 +78,8 @@ socket.on('run question', (data)=>{
         basicAnswerPage.appendChild(button)
 
         button.onclick = function() {
-            socket.emit('answer', answer['ID'])
-            console.log(answer['ID'])
+            socket.emit('answer', answer['AnswerString'])
+            console.log(answer['AnswerString'])
             showPage('waiting')
         }
     }
@@ -116,14 +116,55 @@ socket.on('run question', (data)=>{
     });
 })
 
-socket.on('answer status', (isCorrect)=>{
-    if (!(UNIQUE_ID in isCorrect)) {
+socket.on('answer status', (answerData)=>{
+    userScore = answerData[0]
+    correctAnswers = answerData[1]
+    console.log(correctAnswers)
+
+    if (userScore == 0) {
+        correctAnswerNode = document.querySelector('#incorrect .correct-answer')
+        correctNodeContainer = document.querySelector('#incorrect .correct-answer-container')
+        
+        // delete previous nodes
+        correctNodeContainer.innerHTML = ''
+        
+        // add new ones
+        for (var answer of correctAnswers) {
+            newAnswerNode = correctAnswerNode.cloneNode()
+            newAnswerNode.innerHTML = answer['AnswerString']
+            newAnswerNode.classList.remove('hide')
+            correctNodeContainer.appendChild(newAnswerNode)
+        }
+
         showPage('incorrect')
     } else {
-        if (isCorrect[UNIQUE_ID]) {
-            showPage('correct')
-        } else {
-            showPage('incorrect')
-        }
+        userScoreNode = document.querySelector('#correct-user-score')
+        userScoreNode.innerHTML = '+' + userScore
+        showPage('correct')
     }
+})
+
+socket.on('end', (scoreData)=>{
+    let userPointsNode = document.querySelector('#end .points')
+    let maxScoreNode = document.querySelector('#end .max-points')
+    let messageNode = document.querySelector('#end .message')
+
+    userPointsNode.innerHTML = scoreData[0]
+    maxScoreNode.innerHTML = `out of ${scoreData[1]}`
+
+    // set the message based on the percentage score
+    let percentageScore = scoreData[0] / scoreData[1]
+    if (percentageScore <= 0.2) {
+        messageNode.innerHTML = 'Better luck next time!'
+    } else if (percentageScore <= 0.5) {
+        messageNode.innerHTML = 'Good attempt'
+    } else if (percentageScore <= 0.8) {
+        messageNode.innerHTML = 'Good job'
+    } else if (percentageScore <= 0.95) {
+        messageNode.innerHTML = 'Great work!'
+    } else if (percentageScore <= 1) {
+        messageNode.innerHTML = 'Amazing!'
+    }
+
+    showPage('end')
 })

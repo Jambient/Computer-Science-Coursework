@@ -14,8 +14,8 @@
 </head>
 <body>
 
-<div class="modal" style="display: none;">
-    <div class="question-edit">
+<div class="modal hide">
+    <div class="question-edit hide">
         <div class="modal-topbar">
             <h3>Edit Question 1</h3>
             <span class="material-symbols-outlined">close</span>
@@ -127,18 +127,11 @@
     <div id="questions">
         <h1 class="title">Questions</h1>
         <p class="description">The actual questions for your quiz</p>
-        <div class="questions">
+        <div class="created-questions">
             <div id="question-layout" class="hide">
                 <div>
                     <span class="material-symbols-outlined">drag_indicator</span>
                     <h2>Which option best describes the internet?</h2>
-                </div>
-                <span class="close material-symbols-outlined">delete_forever</span>
-            </div>
-            <div>
-                <div>
-                    <span class="material-symbols-outlined">drag_indicator</span>
-                    <h2>What device forwards packets from one network to another? This is a very long question with extra words</h2>
                 </div>
                 <span class="close material-symbols-outlined">delete_forever</span>
             </div>
@@ -148,7 +141,10 @@
 
 <section class="footer-bar">
     <hr>
-    <button type="button">Continue</button>
+    <div>
+        <p>Back</p>
+        <button type="button">Continue</button>
+    </div>
 </section>
     
 </body>

@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="stylesheet" href="/static/quiz_style.css">
+    <link rel="stylesheet" href="/static/teacher_quiz_style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;600&display=swap" rel="stylesheet">
@@ -16,8 +16,86 @@
 <body>
     
 <div class="pages">
-    <div class="page" id="pre-start">
-        <button id="start-button">Start Quiz</button>
+    <div class="page" id="teacher-pre-start">
+        <div class="topbar">
+            <div>
+                <div>
+                    <p>{{ classData['ClassGroup'] }}</p>
+                    <h3>{{ classData['ClassName'] }}</h3>
+                </div>
+                <div>
+                    <p>Game Code</p>
+                    <h3>{{ roomID }}</h3>
+                </div>
+            </div>
+            <button id="start-button" type="text">Start Quiz</button>
+        </div>
+
+        <div class="content">
+            <div class="players">
+                <div class="title">
+                    <h3>Connected Players</h3>
+                    <p>0/{{ classUsers|length }}</p>
+                </div>
+                <div class="player-list">
+                    {% for user in classUsers %}
+                        <div class="player-container unconnected">
+                            <p>{{ user['FirstName'] }} {{ user['LastName'] }}</p>
+                            <span class="material-symbols-outlined">more_vert</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="page hide" id="question">
+        <div class="topbar">
+            <div>
+                <div>
+                    <p>Current Question</p>
+                    <h3>1 / 10</h3>
+                </div>
+                <div>
+                    <p>Question Time Left</p>
+                    <h3>10</h3>
+                </div>
+            </div>
+            <button id="abort-button" type="text">Abort Quiz</button>
+        </div>
+        <div class="content">
+            <div class="current-question">
+                <h1>What is the definition of a server?</h1>
+                <p></p>
+            </div>
+            <div class="user-responses">
+                <h3>Users</h3>
+                <table>
+                    <tr>
+                        <th>Place</th>
+                        <th>Name</th>
+                        <th>Score</th>
+                        <th>Question Result</th>
+                    </tr>
+                    <tr>
+                        <th>1</th>
+                        <th>James Day</th>
+                        <th>1000</th>
+                        <th></th>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="page hide" id="end">
+        <img class="background" src="/static/uploads/StudentQuizBackground.png">
+        <div class="score-container">
+            <h2 class="message">Quiz Ended</h2>
+            <h4 class="max-points">Would you like to save this quiz</h4>
+            <div>
+                <button class="cancel-btn">Cancel</button>
+                <button class="save-btn">Save Quiz</button>
+            </div>
+        </div>
     </div>
 </div>
 

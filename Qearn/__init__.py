@@ -33,7 +33,7 @@ def connect():
         return False
     else:
         print("user is authenticated")
-        print(session['user_id'])
+        print(session['ID'])
         socketio.emit('id', request.sid, to=request.sid)
 
 @socketio.on('disconnect')
@@ -43,7 +43,9 @@ def disconnect():
         print('error in current room id')
         return False
     room = rooms[currentRoomId]
-    room.RemoveStudent(request.sid)
+    
+    if session['AccountType'] == 'student':
+        room.RemoveStudent(request.sid)
 
 @socketio.on('join')
 def student_join(roomID):
@@ -55,16 +57,27 @@ def student_join(roomID):
 
     ## check the quiz is not already running
     print(room.IsRunning())
-    if room.IsRunning():
-        return False
+
+    ## enable this check after DEBUGGING
+    # if room.IsRunning():
+    #     return False
 
     ## verify the user is part of that class
 
     ## put user into room
     print("successfully joined room")
     join_room(roomID)
-    room.AddStudent(request.sid)
-
+    print(session)
+    if session['AccountType'] == 'student':
+        print('student requested to join')
+        room.AddStudent(request.sid, session['ID'])
+    else:
+        print('teacher requested to join')
+        if room.GetAdmin() == "":
+            room.SetAdmin(request.sid)
+        else:
+            pass
+            # the room already has a teacher, so tell the user this somehow
 
 @socketio.on('start')
 def teacher_start():
@@ -82,8 +95,11 @@ def teacher_start():
 
     room.Start()
 
-    # run first question
-    for i in range(room.GetQuestionCount()):
+    for sid in room.GetStudents():
+        print(sid)
+
+    # run questions
+    while room.GetCurrentQuestionIndex() <= room.GetQuestionCount():
         currentTime = time.time()
         socketio.emit('run question', {
             'questionNumber': 1, 
@@ -97,22 +113,33 @@ def teacher_start():
         # wait till end of current round
         time.sleep(room.GetQuestionDelay() + room.GetQuestionDuration())
 
-        # check users answers
-        isCorrect = room.CheckRoundAnswers()
-        print(isCorrect)
+        # get user scores
+        userScores = room.EndRound()
+        print("user scores:", userScores)
+        print("room users:", room.GetStudents())
 
-        print(room.GetStudents())
+        # send data to the client
+        for sid in userScores:
+            socketio.emit('answer status', [userScores[sid], room.GetCorrectAnswers()], to=sid)
 
-        socketio.emit('answer status', isCorrect, to=currentRoomId)
         time.sleep(3)
 
         room.Next()
+
+    print('quiz ended')
+    for sid in room.GetStudents():
+        print(sid)
+        socketio.emit('end', [room.GetTotalUserScore(sid), room.GetQuestionCount()*1000], to=sid)
+
+    print('ending quiz and notifying admin', room.GetAdmin())
+
+    socketio.emit('end', to=room.GetAdmin())
     
     
 @socketio.on('answer')
-def student_answer(answerId):
+def student_answer(answerString):
     print(request.sid)
-    print(answerId)
+    print(answerString)
 
     currentRoomId = getUsersRoom(request.sid)
     if not currentRoomId:
@@ -120,7 +147,24 @@ def student_answer(answerId):
         return False
     room = rooms[currentRoomId]
 
-    room.AddAnswerForUser(request.sid, answerId)
+    room.AddAnswerForUser(request.sid, answerString)
+
+@socketio.on('save')
+def quiz_save():
+    currentRoomId = getUsersRoom(request.sid)
+    room = rooms[currentRoomId]
+
+    print('save request')
+
+    # make sure the requesting user is the admin of the room
+    # if request.sid != room.GetAdmin():
+    #     print('user is not room admin')
+    #     return False
+    
+    print('SAVING QUIZ')
+    
+    # save the quiz
+    room.SaveQuizInDatabase()
 
 app.config.from_pyfile('config.py')
 
@@ -190,7 +234,7 @@ def run_quiz():
     roomCode = random.randint(111111, 999999)
     print('success', roomCode)
 
-    rooms[roomCode] = Quiz(quizID)
+    rooms[roomCode] = Quiz(quizData, classData)
 
     return str(roomCode), 201
 
@@ -218,21 +262,20 @@ def check_school(schoolCode):
     else:
         return 'False'
 
-@quiz_blueprint.route('/quiz/<roomID>')
-#@login_required
+@quiz_blueprint.route('/quiz/<int:roomID>')
+@auth.login_required
 def quiz(roomID):
     # VERIFY THAT THE STUDENT IS A PART OF THE CLASS THAT IS RUNNING THE QUIZ
     # OR THEY ARE A GUEST IF I END UP ADDING THAT FEATURE
 
     # check that quiz exists
-    roomID = int(roomID)
     if roomID not in rooms:
         return render_template('404.html')
     
     if g.user['AccountType'] == 'student':
-        return render_template('quiz/student.html')
+        return render_template('quiz/student.html', quiz=rooms[roomID].GetQuizData())
     else:
-        return render_template('quiz/teacher.html')
+        return render_template('quiz/teacher.html', roomID=roomID, classData=rooms[roomID].GetClassData(), classUsers=rooms[roomID].GetClassUsers())
 
 app.register_blueprint(quiz_blueprint)
 

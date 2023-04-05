@@ -54,7 +54,7 @@ def single_quiz(quizID):
 
     # set answers
     for question in quiz['Questions']:
-        question['Answers'] = [a for a in answers if a['QuestionID'] == question['ID']]
+        question['Answers'] = [a for a in answers if a['QuestionOrderIndex'] == question['OrderIndex']]
 
     # get owner data
     db.execute('SELECT * FROM user WHERE ID = %s', (quiz['OwnerUserID'],))
@@ -75,6 +75,6 @@ def single_quiz(quizID):
 def test_area():
     return render_template('quiz/sandbox.html')
 
-@bp.route('/quiz/create')
+@bp.route('/create')
 def create_quiz():
     return render_template('quiz/create.html')

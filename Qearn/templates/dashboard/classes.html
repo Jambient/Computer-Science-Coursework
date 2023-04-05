@@ -9,7 +9,7 @@
     </div>
     <p style="margin: 3px 0 0 0; opacity: 40%;">You can change all this information later.</p>
     <hr>
-    <form method="post">
+    <form method="post" enctype=multipart/form-data>
         <div id="create-class-page1" style="display: flex; flex-direction: column; gap: 8px">
             Classroom Name
             <input class="modal-input" type="text" id="name" name="name" placeholder="Computer Science, Biology, Maths, etc." required>
@@ -21,9 +21,9 @@
                 <p>No file selected</p>
                 <input type="file" id="header-image" name="header-image" required>   
             </div>
-            <hr>
-            Add Members
-            <div class="members">
+            <!-- <hr>
+            Add Members -->
+            <div class="members hide">
                 <p>James Day</p>
                 <p>James Day</p>
                 <p>James Day</p>
@@ -111,12 +111,13 @@
 </div>
     
 <div class="classes">
-    <div class="no-classes-warning" style="display: none;">
-        <span class="material-symbols-outlined">question_mark</span>
-        <h2>You are not in any classes!</h2>
-        <p>Ask your teachers to invite you to some to get started.</p>
-    </div>
-
+    {% if classes|length == 0 %}
+        <div class="no-classes-warning">
+            <span class="material-symbols-outlined">question_mark</span>
+            <h2>You are not in any classes!</h2>
+            <p>Ask your teachers to invite you to some to get started.</p>
+        </div>
+    {% endif %}
     <!-- <a href="/home">
         <div class="class">
             <div class="gradient"></div>
@@ -132,7 +133,7 @@
         <a href="{{ 'classes/' + (class['ID']|string) }}">
             <div class="class">
                 <div class="gradient"></div>
-                <img src="{{ url_for('static', filename=('classes/' + (class['ID']|string) + '.jpg')) }}">
+                <img src="{{ url_for('static', filename=('classes/' + class['HeaderPicture'])) }}">
                 <h4 class="subject_name">{{ class['ClassName'] }}</h4>
                 <div class="lower-text">
                     <p class="year_group">{{ class['ClassGroup'] }}</p>
@@ -174,5 +175,16 @@
         <h4 class="subject_name">Create a class</h4>
     </div> -->
 </div>
+
+<script>
+fileInput = document.querySelector('.file-input input')
+fileName = document.querySelector('.file-input p')
+fileInput.onchange = evt => {
+    const [file] = fileInput.files
+    if (file) {
+        fileName.innerHTML = file.name
+    }
+}
+</script>
 
 {% endblock %}

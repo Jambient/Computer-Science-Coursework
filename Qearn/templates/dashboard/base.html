@@ -34,11 +34,18 @@
         Classes
         <div class="selected"></div>
     </div>
-    <div class="option" data-area="history">
+    {% if g.user['AccountType'] == 'teacher' %}
+    <div class="option" data-area="review">
         <div class="icon-div"><p class="material-symbols-outlined">assignment</p></div>
-        History
+        Review
         <div class="selected"></div>
     </div>
+    <div class="option" data-area="create">
+        <div class="icon-div"><p class="material-symbols-outlined">add_circle_outline</p></div>
+        Create
+        <div class="selected"></div>
+    </div>
+    {% endif %}
     <!-- <div class="option" data-area="quizzes">
         <div class="icon-div"><p class="material-symbols-outlined">analytics</p></div>
         Quizzes
@@ -58,12 +65,12 @@
 
     <img class="sidebar-wave" src="/static/uploads/SidebarWave.svg">
 
-    <a href="/logout" class="logout">
+    <!-- <a href="/logout" class="logout">
         <div>
             <span class="material-symbols-outlined">logout</span>
             Log out
         </div>
-    </a>
+    </a> -->
 
     <!-- <hr style="position: absolute; bottom: 90px;"> -->
     <!-- <div class="option"><span class="material-symbols-outlined">dashboard</span>Dashboard</div>
@@ -80,11 +87,32 @@
 </div>
 
 <div class="info-container">
-    <div class="profile">
-        <img class="profile-img" src="/static/uploads/temp_pfp.png">
+    <a href="/logout">
+        Logout
+        <span class="material-symbols-outlined">logout</span>
+    </a>
+    <div class="side-profile">
+        <img src="{{ url_for('static', filename=('users/' + (g.user['ProfilePicture']))) }}">
         <div>
-            <p class="name">James Day</p>
-            <p class="school">Battle Abbey School</p>    
+            <h3>{{ g.user['FirstName'] }} {{ g.user['LastName'] }}</h3>
+            <p>{{ session['SchoolName'] }}</p>    
+        </div>
+    </div>
+    <div class="notifications hide">
+        <div class="topbar">
+            Notifications
+            <span class="material-symbols-outlined">notifications</span>
+        </div>
+        <div class="content">
+            <div>
+                <div class="icon">
+                    <span class="material-symbols-outlined">class</span>
+                </div>
+                <div class="message">
+                    <p class="title">Computer Science</p>
+                    <p class="subtext">added to class</p>
+                </div>
+            </div>
         </div>
     </div>
 </div>

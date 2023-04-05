@@ -59,24 +59,30 @@ body {
     left: 0;
 }
 
-#pre-start {
+#pre-start, #end {
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
     gap: 40px;
 }
-#pre-start > p {
+#pre-start > h3 {
     color: white;
     margin: 0;
 }
 #pre-start > img {
     width: 50px;
 }
+#pre-start > .background, #end > .background {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    filter: blur(30px);
+}
 
 .quiz-data {
-    width: 550px;
-    height: 300px;
+    width: 700px;
+    height: 350px;
     background: white;
     border-radius: 10px;
     overflow: hidden;
@@ -84,11 +90,41 @@ body {
 
 .quiz-thumbnail {
     width: 100%;
-    height: 45%;
+    height: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
+}
+
+.quiz-info {
+    width: 100%;
+    display: flex;
+    height: 50%;
+    padding: 20px;
+    box-sizing: border-box;
+    gap: 20px;
+}
+
+.quiz-info > div {
+    height: 100%;
+    aspect-ratio: 1 / 1;
+    background: var(--green-sea);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    justify-content: center;
+    color: white;
+    padding-bottom: 15px;
+    box-sizing: border-box;
+}
+.quiz-info > div > h1 {
+    margin: 0;
+    font-size: 55px;
+}
+.quiz-info > div > p {
+    margin: 0;
 }
 
 .class-name {
@@ -97,6 +133,7 @@ body {
     color: white;
     left: 10px;
     margin: 0;
+    font-size: 20px;
 }
 
 .class-group {
@@ -105,6 +142,7 @@ body {
     color: white;
     right: 10px;
     margin: 0;
+    font-size: 20px;
 }
 
 .gradient {
@@ -117,6 +155,7 @@ body {
 
 .quiz-thumbnail h1 {
     z-index: 2;
+    color: white;
 }
 .quiz-thumbnail img {
     position: absolute;
@@ -227,7 +266,7 @@ body {
     flex-direction: column;
     color: white;   
 }
-.answer-status-page > div {
+.answer-status-page > .icon-container {
     width: 100px;
     height: 100px;
     background: white;
@@ -238,7 +277,8 @@ body {
 }
 .answer-status-page h1 {
     margin: 0;
-    margin-top: 50px;
+    margin-top: 30px;
+    margin-bottom: 30px;
     font-size: 50px;
 }
 .answer-status-page > h3 {
@@ -249,4 +289,61 @@ body {
 }
 .answer-status-page > div span {
     font-size: 70px;
-}   
+}
+.answer-status-page .correct-answer {
+    padding: 10px 20px 10px 20px;
+    background: white;
+    border-radius: 999px;
+    color: black;
+    margin: 0;
+    margin-top: 15px;
+    text-align: center;
+    width: fit-content;
+}
+.answer-status-page .correct-answer-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 50%;
+}
+
+#end > .score-container {
+    width: 450px;
+    height: 300px;
+    background: white;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    box-sizing: border-box;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+}
+#end .points {
+    margin: 0;
+    font-size: 80px;
+    color: #116F5D;
+}
+#end .max-points {
+    margin: 0;
+    font-size: 20px;
+}
+#end .message {
+    margin-top: 30px;
+    width: 100%;
+    text-align: center;
+    background: #116F5D;
+    color: white;
+    padding: 20px;
+}
+#end .back-btn {
+    padding: 10px 20px 10px 20px;
+    background: white;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: black;
+    z-index: 2;
+}

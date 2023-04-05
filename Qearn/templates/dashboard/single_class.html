@@ -3,19 +3,41 @@
 {% block content %}
 
 <div class="class-header">
-    <img src="{{ url_for('static', filename=('classes/' + (classData['ID']|string) + '.jpg')) }}">
+    <img src="{{ url_for('static', filename=('classes/' + classData['HeaderPicture'])) }}">
     <a href="/classes"><div class="all-classes-button">
         <span class="material-symbols-outlined">chevron_left</span>
         All Classes
     </div></a>
+    {% if g.user['AccountType'] == 'teacher' %}
+        <a href="/classes/{{ classData['ID'] }}/edit" style="text-decoration: none; color: black;">
+            <div class="edit-class-btn"><span class="material-symbols-outlined">tune</span>Edit</div>
+        </a>
+    {% endif %}
     <div class="gradient" style="bottom: 0;"></div>
     <h1>{{ classData['ClassName'] }}</h1>
     <h3>{{ classData['ClassGroup'] }}</h3>
 </div>
 
 <div class="active-quiz-banner">
-    <p class="no-quiz">There is no quiz being currently run for this class</p>
-    <a href="/quizzes">Find a quiz</a>
+    {% if g.user['AccountType'] == 'teacher' %}
+        <a href="/quizzes">Find a quiz</a>
+    {% else %}
+        <p class="no-quiz">There is no quiz being currently run for this class</p>
+    {% endif %}
 </div>
+
+<div class="previous-quizzes">
+    <h3 class="title" style="margin-bottom: 10px;">Previous quizzes</h3>
+    <div class="contents">
+        {% for quiz in quizzes %}
+        <div>
+            <img src="{{ url_for('static', filename=('quizzes/' + quiz['HeaderPicture'])) }}">
+            <h3>{{ quiz['Name'] }}</h3>
+            <p>Run on {{ quiz['DateStarted'].strftime("%d %b %Y") }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
 
 {% endblock %}

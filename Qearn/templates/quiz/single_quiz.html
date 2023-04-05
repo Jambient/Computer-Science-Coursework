@@ -28,14 +28,14 @@
 </nav>
 
 <div class="header">
-    <img src="{{ url_for('static', filename=('quizzes/' + (quiz['ID']|string) + '.jpg')) }}">
+    <img src="{{ url_for('static', filename=('quizzes/' + quiz['HeaderPicture'])) }}">
     <div class="darken"></div>
     <h1>{{ quiz['Name'] }}</h1>
 </div>
 
 <section class="quiz-data">
     <div class="data-container">
-        <p>This will be the quiz description which will just be a short explanation explaining what the quiz is about.</p>
+        <p>{{ quiz['Description'] }}</p>
         <div class="owner">
             <img src="{{ url_for('static', filename=('users/' + (quiz['Owner']['ID']|string) + '.jpg')) }}">
             <div>

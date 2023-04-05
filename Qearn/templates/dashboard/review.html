@@ -1,0 +1,18 @@
+{% extends 'dashboard/base.html' %}
+
+{% block content %}
+
+<h2 class="title">Review</h2>
+<p style="margin: 5px 0 30px 0; opacity: 70%;">Choose a session to review.</p>
+
+<div class="session-container">
+    {% for quiz in sessions %}
+    <div style="margin-bottom: 15px;" onclick="{{ quiz['onclick'] }}">
+        <img src="{{ url_for('static', filename=('quizzes/' + quiz['HeaderPicture'])) }}">
+        <h3>{{ quiz['Name'] }}</h3>
+        <p>Run on {{ quiz['DateStarted'].strftime("%d %b %Y") }}</p>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}

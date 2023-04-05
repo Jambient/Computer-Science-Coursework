@@ -1,57 +1,91 @@
 from Qearn.db import get_db
+from datetime import datetime
 
 class Quiz:
-    def __init__(self, quizID):
-
+    def __init__(self, quizData, classData):
         db = get_db()
 
-        # we can assume the quiz id links to a quiz as this would have been verified previously
+        # get correct version id
+        db.execute(
+            """
+            SELECT ID
+            FROM `quiz-version` 
+            WHERE QuizID = %s
+            ORDER BY VersionDate DESC
+            """,
+            (quizData['ID'],)
+        )
+        versionID = db.fetchone()['ID']
+
+        print('version is', versionID)
 
         # get all questions
         db.execute(
-            """SELECT ID, QuestionString, QuestionType, OrderIndex
+            """SELECT *
             FROM question
-            WHERE (question.QuizID = %s)""",
-            (quizID,)
+            WHERE question.QuizID = %s""",
+            (quizData['ID'],)
         )
         questions = db.fetchall()
+        quizLength = max([q['OrderIndex'] for q in questions])
 
         # get all answers
         db.execute(
-            """SELECT ID, QuestionID, AnswerString, IsCorrect
+            """SELECT *
             FROM answer
-            WHERE (answer.QuizID = %s)""",
-            (quizID,)
+            WHERE answer.QuizID = %s""",
+            (quizData['ID'],)
         )
         answers = db.fetchall()
 
+        # get all student users in class
+        db.execute("SELECT * FROM user as u, `user-to-class` as uc WHERE u.ID = uc.UserID AND uc.ClassID = %s AND u.AccountType = 'student'", (classData['ID'],))
+        classUsers = db.fetchall()
+
         self.layout = {}
-        for i in range(1, len(questions)+1):
+        for i in range(1, quizLength+1):
             data = {}
 
             # get question with order index 'i'
-            questionData = [q for q in questions if q['OrderIndex'] == i]
-            data['question'] = questionData[0]
+            currentIndexQuestions = [q for q in questions if q['OrderIndex'] == i if q['QuizVersionID'] <= versionID]
+            currentIndexQuestions.sort(key=lambda q: q['QuizVersionID'] - versionID, reverse=True)
+            data['question'] = currentIndexQuestions[0]
 
             # get answers for question
-            answersData = [a for a in answers if a['QuestionID'] == data['question']['ID']]
+            currentIndexAnswers = [a for a in answers if a['QuestionOrderIndex'] == data['question']['OrderIndex'] if a['QuizVersionID'] <= versionID]
+            answersData = []
+            answerCount = max([a['AnswerIdentifier'] for a in currentIndexAnswers])
+
+            for aIndex in range(1, answerCount + 1):
+                identifierAnswers = [a for a in currentIndexAnswers if a['AnswerIdentifier'] == aIndex]
+                identifierAnswers.sort(key=lambda a: a['QuizVersionID'] - versionID, reverse=True)
+                answersData.append(identifierAnswers[0])
+
             data['answers'] = answersData
             
             self.layout[i] = data
 
         # set other data about the quiz needed for the system
+        self.quizData = quizData
+        self.classData = classData
+        self.classUsers = classUsers
         self.currentQuestionIndex = 1
-        self.maxQuestionIndex = len(questions)
+        self.maxQuestionIndex = 2#len(questions)
         self.isRunning = False
 
+        self.dateStarted = datetime.now()
+        self.hasSaved = False
+
         # this is data that would be set by the teacher
-        self.questionDelay = 3
-        self.questionDuration = 10
+        self.questionDelay = 2
+        self.questionDuration = 3
 
         self.studentData = {}
         self.roundAnswers = {}
 
         self.clients = []
+        self.sid_to_user = {}
+        self.admin = None
 
     def IsRunning(self):
         return self.isRunning
@@ -61,16 +95,25 @@ class Quiz:
 
     def Next(self):
         if self.currentQuestionIndex < self.maxQuestionIndex:
-            self.studentData[self.currentQuestionIndex]= self.roundAnswers
             self.currentQuestionIndex += 1
             self.roundAnswers = {}
         else:
-            pass
+            self.currentQuestionIndex += 1
             # end quiz here
+
+    def GetQuizData(self):
+        return self.quizData
+    def GetClassData(self):
+        return self.classData
+    def GetClassUsers(self):
+        return self.classUsers
 
     def GetCurrentQuestion(self):
         return self.layout[self.currentQuestionIndex]['question']
 
+    def GetCurrentQuestionIndex(self):
+        return self.currentQuestionIndex
+    
     def GetQuestionCount(self):
         return self.maxQuestionIndex
 
@@ -92,33 +135,95 @@ class Quiz:
 
         return originalAnswerData
 
-    def AddAnswerForUser(self, uniqueId, answerId):
+    def AddAnswerForUser(self, sid, answerString):
         # this stops users from setting their answers more than once
-        if uniqueId not in self.roundAnswers:
-            self.roundAnswers[uniqueId] = answerId
+        if sid not in self.roundAnswers:
+            self.roundAnswers[sid] = answerString
+    
+    def GetTotalUserScore(self, sid):
+        userData = self.studentData[sid]
+        totalScore = sum([userData[qIndex]['score'] for qIndex in userData])
 
-    def GetCorrectAnswer(self):
-        print('GETTING CORRECT ANSWER')
+        return totalScore
+
+    def GetCorrectAnswers(self):
         roundAnswers = self.layout[self.currentQuestionIndex]['answers']
-        print(roundAnswers)
-        correctAnswer = [a for a in roundAnswers if a['IsCorrect'] == 1]
-        return correctAnswer[0]
+        correctAnswers = [a for a in roundAnswers if a['IsCorrect'] == 1]
+        return correctAnswers
 
-    def CheckRoundAnswers(self):
-        isCorrect = {}
-        correctAnswer = self.GetCorrectAnswer()
-        for id in self.roundAnswers:
-            answerId = self.roundAnswers[id]
-            isCorrect[id] = answerId == correctAnswer['ID']
+    def EndRound(self):
+        ## checks correct answers
+        ## awards points
+        ## updates user data
 
-        return isCorrect
+        userScores = {}
+        currentQuestion = self.GetCurrentQuestion()
+        
+        print(self.roundAnswers)
 
-    def AddStudent(self, sid):
+        match currentQuestion['QuestionType']:
+            case "Basic":
+                roundAnswers = self.layout[self.currentQuestionIndex]['answers']
+                correctAnswers = [a['AnswerString'] for a in roundAnswers if a['IsCorrect'] == 1]
+
+                for sid in self.GetStudents():
+                    userScore = 0
+
+                    if sid in self.roundAnswers:
+                        userAnswer = self.roundAnswers[sid]
+                        userScore = 1000 if userAnswer in correctAnswers else 0
+
+                    userScores[sid] = userScore
+
+        for sid in userScores:
+            self.studentData[sid][self.currentQuestionIndex] = {
+                "score": userScores[sid],
+                "answer": self.roundAnswers[sid] if sid in self.roundAnswers else None,
+            }
+
+        return userScores
+
+    def AddStudent(self, sid, user_id):
         self.clients.append(sid)
+        self.sid_to_user[sid] = user_id
+        if sid not in self.studentData:
+            self.studentData[sid] = {}
     def RemoveStudent(self, sid):
         self.clients.remove(sid)
+        del self.sid_to_user[sid]
     def GetStudents(self):
         return self.clients
+    
+    def SetAdmin(self, sid):
+        self.admin = sid
+    def GetAdmin(self):
+        return self.admin
+    
+    def SaveQuizInDatabase(self):
+        if self.hasSaved:
+            return
+        self.hasSaved = True
+
+        db = get_db()
+
+        ## insert a session into the database
+        db.execute('INSERT INTO session (DateStarted, QuizID, ClassID) VALUES (%s, %s, %s)', (self.dateStarted, self.quizData['ID'], self.classData['ID']))
+        sessionId = db.lastrowid
+
+        ## insert user results
+        for sid in self.GetStudents():
+            userId = self.sid_to_user[sid]
+            for questionIndex in range(1, self.maxQuestionIndex + 1):
+                answerString = self.studentData[sid][questionIndex]['answer']
+
+                if answerString == None:
+                    answerString = ""
+
+                questionId = self.layout[questionIndex]['question']['ID']
+                db.execute('INSERT INTO `user-result` (UserID, SessionID, QuestionID, ChosenAnswer) VALUES (%s, %s, %s, %s)',
+                            (userId, sessionId, questionId, answerString))
+
+                
 
 
 ## quiz life cycle

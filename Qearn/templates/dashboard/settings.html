@@ -2,53 +2,36 @@
 
 {% block content %}
 
-<h2 class="title">Settings</h2>
-
-<!-- <div class="settings-description">
-    <h3>Profile</h3>
-    <p>Update your profile picture and personal details here.</p>
-</div> -->
-
-<!-- <div id="settings-containers">
-    <div class="setting-container" id="profile">
-        <hr>
-        <div>
-            <p>Profile Picture</p>
-            <div class="profile-picture-container">
-                <img class="profile-img" src="static/uploads/temp_pfp.png">
-            </div>
-            <a>Update</a>
-            <a>Delete</a>
-        </div>
-        <hr>
-        <div>
-            <p>Full Name</p>
-            <input>
-        </div>
-        <hr>
-        <div>
-            <p>Full Name</p>
-            <input>
-        </div>
+<div class="classes-topbar">
+    <h2 class="title">Settings</h2>
+    <div>
+        {% if hasRecentlySaved %}
+        Saved!
+        {% endif %}
+        <button id="save-settings-btn" form="settings-form"><span class="material-symbols-outlined">save</span>Save</button>
     </div>
-</div> -->
+</div>
 
-<div class="settings-containers">
+<form class="settings-containers" method="POST" enctype="multipart/form-data" id="settings-form">
     <div class="container">
         <h3 class="title">Profile Details</h3>
         <div class="profile-picture">
-            <img src="/static/uploads/temp_pfp.png">
-            <div>Upload Profile Photo</div>
-            <div>Delete</div>
+            <img src="{{ url_for('static', filename=('users/' + (g.user['ProfilePicture']))) }}">
+            <label for="pfp">Upload Profile Photo
+                <input id="pfp" name="pfp" type="file" style="display: none;" accept="image/png, image/jpeg">
+            </label>
+            <div class="delete-btn">Delete</div>
+            <input type="checkbox" id="is-default-pfp" name="is-default-pfp" style="display: none;">
+            <input type="checkbox" id="has-changed-pfp" name="has-changed-pfp" style="display: none;">
         </div>
         <div class="user-data">
             <div>
                 <label for="first-name">First Name</label>
-                <input placeholder="Enter your first name" type="text" id="first-name">
+                <input placeholder="Enter your first name" type="text" id="first-name" name="first-name" value="{{ g.user['FirstName'] }}">
             </div>
             <div>
                 <label for="last-name">Last Name</label>
-                <input placeholder="Enter your last name" type="text" id="last-name">
+                <input placeholder="Enter your last name" type="text" id="last-name" name="last-name" value="{{ g.user['LastName'] }}">
             </div>
         </div>
     </div>
@@ -56,14 +39,60 @@
         <h3 class="title">Email</h3>
         <div class="user-data">
             <div>
-                <label for="first-name">Email</label>
-                <input placeholder="Enter your email" type="text" id="first-name">
+                <label for="email">Email</label>
+                <input placeholder="Enter your email" type="text" name="email" id="email" value="{{ g.user['Email'] }}">
             </div>
         </div>
     </div>
-    <div class="container">
-        <h3 class="title">Password</h3>
+    <div class="container" style="margin-bottom: 50px;">
+        <h3 class="title" style="margin-bottom: 0;">Change Password</h3>
+        <p style="color: red; margin: 5px 0 20px 0;">The password must be at least 8 characters</p>
+        <div class="user-data">
+            <div>
+                <label for="password">New Password</label>
+                <input placeholder="Enter your new password" type="text" name="password" id="password">
+            </div>
+        </div>
     </div>
-</div>
+</form>
+
+<script>
+imgInp = document.querySelector('.container .profile-picture label input')
+imgPreview = document.querySelector('.container .profile-picture img')
+deleteBtn = document.querySelector('.container .profile-picture .delete-btn')
+isDefaultPfpCheckbox = document.querySelector('#is-default-pfp')
+hasChangedPfpCheckbox = document.querySelector('#has-changed-pfp')
+passwordInp = document.querySelector('#password')
+submitBtn = document.querySelector('#save-settings-btn')
+
+imgInp.onchange = evt => {
+  const [file] = imgInp.files
+  if (file) {
+    imgPreview.src = URL.createObjectURL(file)
+    isDefaultPfpCheckbox.checked = false
+    hasChangedPfpCheckbox.checked = true
+  }
+}
+deleteBtn.onclick = evt => {
+    imgPreview.src = "{{ url_for('static', filename=('uploads/default-pfp.jpg')) }}"
+    isDefaultPfpCheckbox.checked = true
+}
+
+passwordInp.addEventListener('input', () => {
+    console.log('wow')
+
+    let newValue = passwordInp.value
+    if (newValue == "") {
+        submitBtn.disabled = false
+    } else {
+        if (newValue.length >= 8) {
+            submitBtn.disabled = false
+        } else {
+            submitBtn.disabled = true
+        }
+    }   
+})
+
+</script>
 
 {% endblock %}

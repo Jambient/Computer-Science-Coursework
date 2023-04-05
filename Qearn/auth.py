@@ -7,6 +7,8 @@ from passlib.hash import sha256_crypt
 
 from Qearn.db import get_db
 
+import shutil, os
+
 bp = Blueprint('auth', __name__, url_prefix='/')
 
 @bp.route("/register", methods=("GET", "POST"))
@@ -20,8 +22,6 @@ def register():
         lastName = request.form['last-name']
         db = get_db()
         error = None
-
-        print(email, password, school_code, account_type, firstName, lastName)
 
         ## check if the form is fully filled
         if not email or not password or not school_code or not account_type or not firstName or not lastName:
@@ -44,16 +44,20 @@ def register():
                 "INSERT INTO user (FirstName, LastName, Email, Password, AccountType, SchoolID) VALUES (%s, %s, %s, %s, %s, %s)",
                 (firstName, lastName, email, sha256_crypt.encrypt(password), account_type, school["ID"])
             )
+            userId = db.lastrowid
+            db.execute(
+                "UPDATE user SET ProfilePicture = %s WHERE ID = %s",
+                (f'{userId}.jpg', userId)
+            )
+
+            shutil.copy('Qearn/static/uploads/default-pfp.jpg', f'Qearn/static/users/{userId}.jpg')
+
         except db.IntegrityError:
             error = "There is already an account with that email."
         else:
             return redirect(url_for("auth.login"))
 
-    type = request.args.get('type')
-    if type == 'student' or type == 'teacher':
-        return render_template("auth/register.html")
-    else:
-        return redirect(url_for('index'))
+    return render_template("auth/register.html")
 
 @bp.route('/login', methods=('GET', 'POST'))
 def login():
@@ -61,22 +65,36 @@ def login():
         email = request.form['email']
         password = request.form['password']
         db = get_db()
-        error = None
 
+        # check the form is fully completed
+        if not email or not password:
+            flash('You must fill in all the details.')
+            return redirect(request.url)
+
+        # get user data
         db.execute(
             'SELECT * FROM user WHERE Email = %s', (email,)
         )
         user = db.fetchone()
 
+        # make sure user exists and password is correct
         if (user is None) or (not sha256_crypt.verify(password, user["Password"])):
-            error = 'The email or password is not correct.'
+            flash('The email or password is not correct.')
+            return redirect(request.url)
 
-        if error is None:
-            session.clear()
-            session['user_id'] = user['ID']
-            return redirect(url_for('index'))
+        # get user school
+        db.execute(
+            'SELECT * FROM school WHERE ID = %s', (user['SchoolID'],)
+        )
+        schoolData = db.fetchone()
 
-        flash(error)
+        session.clear()
+        session['ID'] = user['ID']
+        session['AccountType'] = user['AccountType']
+        session['SchoolName'] = schoolData['SchoolName']
+        session['SchoolID'] = schoolData['ID']
+
+        return redirect(url_for('index'))
 
     return render_template('auth/login.html')
 
@@ -86,7 +104,7 @@ def forgot_password():
 
 @bp.before_app_request
 def load_logged_in_user():
-    user_id = session.get('user_id')
+    user_id = session.get('ID')
 
     if user_id is None:
         g.user = None

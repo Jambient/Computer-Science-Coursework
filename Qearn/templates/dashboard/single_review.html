@@ -1,0 +1,125 @@
+{% extends 'dashboard/base.html' %}
+
+{% block content %}
+
+<h2 class="title">Review</h2>
+
+<div class="page-options">
+    <h4 data-pageid="overview-page">Overview</h4>
+    <h4 data-pageid="questions-page">Questions</h4>
+    <h4 data-pageid="students-page">Students</h4>
+</div>
+
+<div class="pages">
+    <div id="overview-page">
+        <div class="light-container">
+            <div class="data">
+                <p class="data-title">Participating Class</p>
+                <h1 class="data-value">Computer Science - Year 13</h1>
+            </div>
+            <div class="icon" style="background: lightblue;">
+                <span class="material-symbols-outlined">class</span>
+            </div>
+        </div>
+        <div class="light-container">
+            <div class="data">
+                <p class="data-title">Number Of Students</p>
+                <h1 class="data-value">11</h1>
+            </div>
+            <div class="icon" style="background: lightblue;">
+                <span class="material-symbols-outlined">class</span>
+            </div>
+        </div>
+        <div class="light-container">
+            <div class="data">
+                <p class="data-title">Average Score</p>
+                <h1 class="data-value">70%</h1>
+            </div>
+            <div class="icon" style="background: lightgreen;">
+                <span class="material-symbols-outlined">class</span>
+            </div>
+        </div>
+    </div>
+    <div id="questions-page" class="hide">
+        <div class="light-container">
+            <div class="data">
+                <p class="data-title">Question 1</p>
+                <h3 class="data-value">Which option best describes the internet?</h3>
+            </div>
+            <div class="answers">
+                <div class="correct">
+                    <p>The internet is a global WAN</p>
+                    <div>
+                        <div>
+                            <img src="/static/users/2.jpg">
+                            <img src="/static/users/3.jpg">
+                            <img src="/static/users/15.jpg">
+                        </div>
+                        <p>80%</p>
+                    </div>
+                </div>
+                <div>
+                    <p>The internet is a global LAN</p>
+                    <div>
+                        <div>
+                            <img src="/static/users/2.jpg">
+                        </div>
+                        <p>20%</p>
+                    </div>
+                </div>
+                <div>
+                    <p>The internet is a connection to an ISP</p>
+                    <div>
+                        <div>
+                        </div>
+                        <p>0%</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="students-page" class="hide">
+    </div>
+</div>
+
+<script>
+
+var pagesContainer = document.querySelector('.pages')
+var optionButtons = document.querySelector('.page-options').children
+
+// get all pages
+let pages = pagesContainer.children
+
+function showPage(pageId) {
+    let page = document.getElementById(pageId)
+
+    page.classList.remove('hide')
+    for (let p of pages) {
+        if (p.id != pageId) {
+            p.classList.add('hide')
+        }
+    }
+
+    for (let button of optionButtons) {
+        if (button.dataset.pageid == pageId) {
+            button.classList.add('active')
+        } else {
+            button.classList.remove('active')
+        }
+    }
+}
+function getPage(pageId) {
+    return pagesContainer.getElementById(pageId)
+}
+
+for (let button of optionButtons) {
+    button.onclick = () => {
+        showPage(button.dataset.pageid)
+    }
+}
+
+showPage('questions-page')
+
+</script>
+
+{% endblock %}

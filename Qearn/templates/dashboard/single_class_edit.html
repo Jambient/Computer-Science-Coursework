@@ -1,0 +1,31 @@
+{% extends 'dashboard/base.html' %}
+
+{% block content %}
+
+<form method="POST" enctype="multipart/form-data" class="class-edit-form">
+    <h3>Classroom Header</h3>
+    <div class="classHeader">
+        <img src="{{ url_for('static', filename=('classes/' + classData['HeaderPicture'])) }}">
+        <div class="gradient" style="bottom: 0;"></div>
+        <label for="header-image" class="upload-btn">Upload New Image</label>
+        <input type="file" style="display: none;" id="header-image">
+    </div>
+
+    <h3>Classroom Name</h3>
+    <input type="text" value="{{ classData['ClassName'] }}">
+
+    <h3>Classroom Group</h3>
+    <input type="text" value="{{ classData['ClassGroup'] }}">
+</form>
+<div class="class-header" style="position: absolute; top: 20px; width: 100%;">
+    <a href="/classes"><div class="all-classes-button">
+        <span class="material-symbols-outlined">chevron_left</span>
+        All Classes
+    </div></a>
+    <div class="edit-class-btn"><span class="material-symbols-outlined">tune</span>Save</div>
+    <!-- <div class="gradient" style="bottom: 0;"></div>
+    <h1>{{ classData['ClassName'] }}</h1>
+    <h3>{{ classData['ClassGroup'] }}</h3> -->
+</div>
+
+{% endblock %}
