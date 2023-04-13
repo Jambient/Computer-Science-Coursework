@@ -10,10 +10,6 @@
 </head>
 <body>
 
-<div class="settings">
-    <span class="material-symbols-outlined">settings</span>
-</div>
-
 <div class="timer">
     <h1></h1>
 </div>
@@ -47,6 +43,24 @@
     </div>
 
     <div class="page hide" id="question">
+        <img src="/static/uploads/StudentQuizQuestionBackground.png">
+        <div class="question">
+            <div class="timer">
+                <canvas style="position: absolute;" width="60" height="60"></canvas>
+                <h3>20</h3>
+            </div>
+            <p><span id="current-question">Question <span style="font-size: 25px; font-weight: bold;">1</span></span> <span id="question-total">/ 10</span></p>
+            <h1>Which option best describes the internet?</h1>
+        </div>
+        <div class="answer">
+            <div id="Basic">
+                <button>The internet is a global WAN</button>
+                <button>The internet is a global LAN</button>
+                <button>The internet is a connection to an ISP</button>
+            </div>
+        </div>
+    </div>
+    <!-- <div class="page" id="question">
         <div class="question-data">
             <img src="https://images1.content-hci.com/commimg/myhotcourses/blog/post/myhc_89683.jpg">
             <div class="data-box">
@@ -56,26 +70,32 @@
         </div>
         <div class="answer">
             <div id="Basic" class="hide">
-                <!-- <button>Answer 1</button>
+                <button>Answer 1</button>
                 <button>Answer 2</button>
                 <button>Answer 3</button>
-                <button>Answer 4</button> -->
+                <button>Answer 4</button>
             </div>
         </div>
-    </div>
+    </div> -->
 
     <div class="page hide" id="waiting">
+        <img class="background-image-left" src="/static/uploads/StudentQuizCountdownBackground.png">
+        <img class="background-image-right" src="/static/uploads/StudentQuizCountdownBackground.png">
         <div>
             <div></div>
             <div></div>
             <div></div>
         </div>
-        <h1>Waiting for other students...</h1>
+        <h1 style="opacity: 70%;">Waiting for other students...</h1>
     </div>
-    <div class="page answer-status-page hide" id="countdown">
-        <div>
-            <h1 style="color: var(--green-sea); margin: 0">3</h1>
+    <div class="page hide" id="countdown" style="justify-content: center;">
+        <img class="background-image-left" src="/static/uploads/StudentQuizCountdownBackground.png">
+        <img class="background-image-right" src="/static/uploads/StudentQuizCountdownBackground.png">
+        <div class="top-layer">
+            <h1 style="color: var(--green-sea); margin: 0; user-select: none;">3</h1>
         </div>
+        <div class="middle-layer"></div>
+        <div class="bottom-layer"></div>
     </div>
     <div class="page answer-status-page hide" id="correct" style="background: #00C660;">
         <div class="icon-container">

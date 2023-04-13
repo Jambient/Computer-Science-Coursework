@@ -47,3 +47,34 @@ saveButton.onclick = function() {
     console.log('saving quiz')
     socket.emit('save')
 }
+
+// handling the pages on the initial start screen
+var subPages = document.querySelector('.content').children
+var topbarButtons = document.querySelector('.topbar > div').children
+
+function showSubPage(pageId) {
+    let page = document.getElementById(pageId)
+
+    page.classList.remove('hide')
+    for (let p of subPages) {
+        if (p.id != pageId) {
+            p.classList.add('hide')
+        }
+    }
+
+    for (let button of topbarButtons) {
+        if (button.dataset.pageid == pageId) {
+            button.classList.add('active')
+        } else {
+            button.classList.remove('active')
+        }
+    }
+}
+
+for (let button of topbarButtons) {
+    button.onclick = () => {
+        showSubPage(button.dataset.pageid)
+    }
+}
+
+showSubPage('settings-page')

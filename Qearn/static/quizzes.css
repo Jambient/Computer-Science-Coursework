@@ -745,3 +745,86 @@ hr {
     gap: 10px;
     margin-top: 5px;
 }
+
+#initial-option {
+    height: 65vh;
+}
+
+#initial-option > div {
+    margin-top: 50px;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 80px;
+}
+#initial-option > div > div {
+    width: 250px;
+    height: 300px;
+    background: white;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    gap: 40px;
+    font-size: 20px;
+    text-align: center;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+#initial-option > div > div:hover {
+    transform: scale(1.1);
+}
+#initial-option > div > div > span {
+    font-size: 50px;
+    width: 80px;
+    height: 80px;
+    background: var(--green-sea);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+#initial-option > div > div > h3 {
+    margin: 0;
+    color: black;
+    opacity: 70%;
+}
+
+#choose-previous-quiz > div {
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    user-select: none;
+}
+#choose-previous-quiz > div > h3 {
+    margin: 0;
+    margin-bottom: 5px;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+}
+#choose-previous-quiz > div > p {
+    margin: 0;
+    opacity: 50%;
+    text-align: center;
+}
+#choose-previous-quiz > div > img {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    margin: -20px;
+    object-fit: cover;
+    opacity: 30%;
+}
+#choose-previous-quiz > div:hover {
+    box-shadow: 0 0 5px black;
+}

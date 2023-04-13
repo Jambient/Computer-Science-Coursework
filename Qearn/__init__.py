@@ -10,6 +10,7 @@ app = Flask(__name__, instance_relative_config=True)
 socketio = SocketIO(app, cors_allowed_origins='*') #http://127.0.0.1:5000')
 
 rooms = {}
+ClassToRoom = {}
 
 ## Functions ##
 
@@ -46,6 +47,14 @@ def disconnect():
     
     if session['AccountType'] == 'student':
         room.RemoveStudent(request.sid)
+    elif session['AccountType'] == 'teacher':
+        room.RemoveAdmin()
+
+    # close down the room if all users have left (including the admin)
+    if len(room.GetStudents()) == 0 and room.GetAdmin() == None:
+        print('SHUTTING DOWN THE ROOM')
+        del rooms[currentRoomId]
+        del ClassToRoom[room.classData['ID']]
 
 @socketio.on('join')
 def student_join(roomID):
@@ -79,12 +88,15 @@ def student_join(roomID):
             pass
             # the room already has a teacher, so tell the user this somehow
 
+@socketio.on('latency-ping')
+def latency_ping():
+    socketio.emit('latency-pong', to=request.sid)
+
 @socketio.on('start')
 def teacher_start():
     print("a teacher is attempting to start the quiz")
 
     # get the rooms the teacher is in
-
     currentRoomId = getUsersRoom(request.sid)
     if not currentRoomId:
         print('error in current room id')
@@ -100,18 +112,24 @@ def teacher_start():
 
     # run questions
     while room.GetCurrentQuestionIndex() <= room.GetQuestionCount():
-        currentTime = time.time()
         socketio.emit('run question', {
-            'questionNumber': 1, 
+            'questionNumber': room.GetCurrentQuestionIndex(), 
             'maxQuestions': room.GetQuestionCount(), 
             'questionData': room.GetCurrentQuestion(), 
             'answerData': room.GetBasicAnswerData(),
-            'startTime': currentTime + room.GetQuestionDelay(),
-            'endTime': currentTime + room.GetQuestionDelay() + room.GetQuestionDuration()
+            'questionDelay': room.GetQuestionDelay(),
+            'questionTime': room.GetQuestionDuration()
         }, to=currentRoomId)
 
         # wait till end of current round
-        time.sleep(room.GetQuestionDelay() + room.GetQuestionDuration())
+        timePassed = 0
+        while timePassed < room.GetQuestionDelay() + room.GetQuestionDuration():
+            time.sleep(0.5)
+            timePassed += 0.5
+
+            # check if all players have answered the question
+            if len(room.roundAnswers) == len(room.GetStudents()):
+                break
 
         # get user scores
         userScores = room.EndRound()
@@ -235,6 +253,7 @@ def run_quiz():
     print('success', roomCode)
 
     rooms[roomCode] = Quiz(quizData, classData)
+    ClassToRoom[classData['ID']] = roomCode
 
     return str(roomCode), 201
 
@@ -280,13 +299,8 @@ def quiz(roomID):
 app.register_blueprint(quiz_blueprint)
 
 @app.errorhandler(404)
-def page_not_found(e):
-    # note that we set the 404 status explicitly
+def page_not_found(e): 
     return render_template('404.html'), 404
-
-    # print('Connected!', file=os.getenv().stderr)
-    # app.logger.info("Connected!")
-    # emit('after connect', {'data': 'Hi there'})
 
 # @socketio.on('sup')
 # def test_send():

@@ -17,8 +17,14 @@
     
 <div class="pages">
     <div class="page" id="teacher-pre-start">
+        <img src="/static/uploads/TeacherQuizBanner.png">
         <div class="topbar">
             <div>
+                <p data-pageid="overview-page">Overview</p>
+                <p data-pageid="players-page">Players</p>
+                <p data-pageid="settings-page">Settings</p>
+            </div>
+            <!-- <div style="display: none;">
                 <div>
                     <p>{{ classData['ClassGroup'] }}</p>
                     <h3>{{ classData['ClassName'] }}</h3>
@@ -27,12 +33,44 @@
                     <p>Game Code</p>
                     <h3>{{ roomID }}</h3>
                 </div>
-            </div>
+            </div> -->
             <button id="start-button" type="text">Start Quiz</button>
         </div>
 
         <div class="content">
-            <div class="players">
+            <div id="overview-page"></div>
+            <div id="players-page">
+                <p>3 / 10 students connected</p>
+                <div class="light-container">
+                    <div>
+                        <img src="/static/users/2.jpg">
+                        <h2>James Day</h2>
+                    </div>
+                    <h3>Waiting for student...</h3>
+                </div>
+                <div class="light-container unconnected">
+                    <div>
+                        <img src="/static/users/2.jpg">
+                        <h2>James Day</h2>
+                    </div>
+                    <h3>Waiting for student...</h3>
+                </div>
+            </div>
+            <div id="settings-page">
+                <div class="light-container">
+                    <h3>Delay between Questions</h3>
+                    <input type="number" value="3" size="5">
+                </div>
+                <div class="light-container">
+                    <h3>Duration of Questions</h3>
+                    <input type="number" value="12" size="5">
+                </div>
+                <div class="light-container">
+                    <h3>Time based Scoring</h3>
+                    <input type="checkbox">
+                </div>
+            </div>
+            <!-- <div class="players">
                 <div class="title">
                     <h3>Connected Players</h3>
                     <p>0/{{ classUsers|length }}</p>
@@ -45,7 +83,7 @@
                         </div>
                     {% endfor %}
                 </div>
-            </div>
+            </div> -->
         </div>
     </div>
     <div class="page hide" id="question">

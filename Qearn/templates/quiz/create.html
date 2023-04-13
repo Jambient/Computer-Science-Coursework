@@ -107,6 +107,29 @@
 </section>
 
 <form class="pages">
+    <div id="initial-option">
+        <h1 class="title">Choose what to do</h1>
+        <p class="description">You can either create a brand new quiz or change something in one of your old quizzes.</p>
+        <div>
+            <div class="new">
+                <span class="material-symbols-outlined">add</span>
+                <h3>New Quiz</h3>
+            </div>
+            <div class="edit">
+                <span class="material-symbols-outlined">edit</span>
+                <h3>Edit Previous Quiz</h3>
+            </div>
+        </div>
+    </div>
+    <div id="choose-previous-quiz" class="hide">
+        <h1 class="title">Choose a Quiz</h1>
+        <p class="description">Choose which quiz you want to edit.</p>
+
+        <div style="margin-bottom: 15px;">
+            <img src="static/quizzes/1.jpg">
+            <h3>The internet and the world wide web</h3>
+        </div>
+    </div>
     <div id="basic-info" class="hide" style="width: 35%;">
         <h1 class="title">Basic Information</h1>
         <p class="description">Settings to make finding and understanding your quiz easier.</p>
@@ -124,7 +147,7 @@
         <label for="name">Quiz Description <span>*</span></label>
         <textarea maxlength="300" id="name" type="textarea" placeholder="e.g. A quiz made to test just how much you know about our universe." rows="4"></textarea>
     </div>
-    <div id="questions">
+    <div id="questions" class="hide">
         <h1 class="title">Questions</h1>
         <p class="description">The actual questions for your quiz</p>
         <div class="created-questions">

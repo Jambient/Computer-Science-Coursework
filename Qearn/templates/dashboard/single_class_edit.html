@@ -1,8 +1,33 @@
 {% extends 'dashboard/base.html' %}
 
+{% block modal %}
+
+<div class="edit-students">
+    <div class="modal-header">
+        <h2>Add Members</h2>
+        <a onclick="document.querySelector('.modal').classList.add('hide')"><span class="material-symbols-outlined">close</span></a>
+    </div>
+    <p style="margin: 3px 0 0 0; opacity: 40%;">Search for students in the box below.</p>
+    <hr>
+    <div class="search" style="width: 100%; margin: 0;">
+        <input type="text" placeholder="Search...">
+        <span class="material-symbols-outlined">search</span>
+    </div>
+    <div class="search-results">
+        {% for user in schoolUsers %}
+        <div class="light-container hide" data-full-name="{{ user['FirstName'] }} {{ user['LastName'] }}" data-userid="{{ user['ID'] }}">
+            <p>{{ user['FirstName'] }} {{ user['LastName'] }} <span>({{ user['AccountType'] }})</span></p>
+            <span class="material-symbols-outlined">add</span>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}
+
 {% block content %}
 
-<form method="POST" enctype="multipart/form-data" class="class-edit-form">
+<form method="POST" enctype="multipart/form-data" class="class-edit-form" id="class-edit-form">
     <h3>Classroom Header</h3>
     <div class="classHeader">
         <img src="{{ url_for('static', filename=('classes/' + classData['HeaderPicture'])) }}">
@@ -16,16 +41,74 @@
 
     <h3>Classroom Group</h3>
     <input type="text" value="{{ classData['ClassGroup'] }}">
+
+    <h3>Manage Members</h3>
+    <div id="member-list">
+        {% for user in users %}
+        <div class="light-container" data-userid="{{ user['ID'] }}">
+            <div class="data">
+                <img src="{{ url_for('static', filename=('users/' + (user['ProfilePicture']))) }}">
+                <h3 class="data-value">{{ user['FirstName'] }} {{ user['LastName'] }}</h3>
+                <p>({{ user['AccountType'] }})</p>
+            </div>
+            <span class="material-symbols-outlined">delete</span>
+        </div>
+        {% endfor %}
+    </div>
+    <div id="add-answer-button" onclick="document.querySelector('.modal').classList.remove('hide')">
+        <span class="material-symbols-outlined">add</span>
+    </div>
 </form>
 <div class="class-header" style="position: absolute; top: 20px; width: 100%;">
-    <a href="/classes"><div class="all-classes-button">
+    <a href="/classes/{{ classData['ID'] }}"><div class="all-classes-button">
         <span class="material-symbols-outlined">chevron_left</span>
-        All Classes
+        Back to class
     </div></a>
-    <div class="edit-class-btn"><span class="material-symbols-outlined">tune</span>Save</div>
-    <!-- <div class="gradient" style="bottom: 0;"></div>
-    <h1>{{ classData['ClassName'] }}</h1>
-    <h3>{{ classData['ClassGroup'] }}</h3> -->
+    <button form="class-edit-form" class="edit-class-btn"><span class="material-symbols-outlined">tune</span>Save</button>
 </div>
+
+<script>
+
+editStudentsModal = document.querySelector('.edit-students')
+searchBox = editStudentsModal.querySelector('.search input')
+searchResults = editStudentsModal.querySelector('.search-results')
+
+classMemberList = document.querySelector('#member-list')
+
+searchBox.addEventListener('input', function() {
+    // get list of ids of current class members
+    currentMemberIDs = []
+    for (member of classMemberList.children) {
+        currentMemberIDs.push(member.getAttribute('data-userid'))
+    }
+
+    var currentlyShownMembers = 0
+
+    for (result of searchResults.children) {
+        if (searchBox.value.length == 0) {
+            result.classList.add('hide')
+            continue
+        }
+
+        if (currentlyShownMembers > 5) {
+            result.classList.add('hide')
+            continue
+        }
+
+        if (currentMemberIDs.includes(result.getAttribute('data-userid'))) {
+            continue
+        }
+
+        let memberName = result.getAttribute('data-full-name').toLowerCase();
+        if (searchBox.value.toLowerCase() == memberName.substring(0, Math.min(searchBox.value.length, memberName.length))) {
+            result.classList.remove('hide')
+            currentlyShownMembers += 1
+        } else {
+            result.classList.add('hide')
+        }
+    }
+})
+
+</script>
 
 {% endblock %}

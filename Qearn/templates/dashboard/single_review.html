@@ -15,7 +15,7 @@
         <div class="light-container">
             <div class="data">
                 <p class="data-title">Participating Class</p>
-                <h1 class="data-value">Computer Science - Year 13</h1>
+                <h1 class="data-value">{{ quiz.classData['ClassName'] }} - {{ quiz.classData['ClassGroup'] }}</h1>
             </div>
             <div class="icon" style="background: lightblue;">
                 <span class="material-symbols-outlined">class</span>
@@ -23,8 +23,8 @@
         </div>
         <div class="light-container">
             <div class="data">
-                <p class="data-title">Number Of Students</p>
-                <h1 class="data-value">11</h1>
+                <p class="data-title">Number Of Participating Students</p>
+                <h1 class="data-value">{{ userTotal }}</h1>
             </div>
             <div class="icon" style="background: lightblue;">
                 <span class="material-symbols-outlined">class</span>
@@ -33,7 +33,7 @@
         <div class="light-container">
             <div class="data">
                 <p class="data-title">Average Score</p>
-                <h1 class="data-value">70%</h1>
+                <h1 class="data-value">{{ (averageScore / (1000 * completedQuestions) * 100)|int }}%</h1>
             </div>
             <div class="icon" style="background: lightgreen;">
                 <span class="material-symbols-outlined">class</span>
@@ -41,7 +41,62 @@
         </div>
     </div>
     <div id="questions-page" class="hide">
+        {% for qIndex in range(1, completedQuestions + 1) %}
         <div class="light-container">
+            <div class="data">
+                <p class="data-title">Question {{ qIndex }}</p>
+                <h3 class="data-value">{{ quiz.layout[qIndex]['question']['QuestionString'] }}</h3>
+            </div>
+            {% if quiz.layout[qIndex]['question']['QuestionType'] == 'Basic' %}
+            <div class="answers">
+                {% for answer in quiz.layout[qIndex]['answers'] %}
+                <div {% if answer['IsCorrect'] == 1 %} class="correct" {% endif %}>
+                    <p>{{ answer['AnswerString'] }}</p>
+                    <div>
+                        <div>
+                            {% set ns = namespace(answerCount=0) %}
+                            {% for userAnswer in answers %}
+                                {% if userAnswer['QuestionID'] == qIndex and userAnswer['ChosenAnswer'] == answer['AnswerString'] %}
+                                {% set ns.answerCount = ns.answerCount + 1 %}
+                                <img onclick="userClick(this.dataset.userid);" data-userid="{{ userAnswer['UserID'] }}" title="{{ users[userAnswer['UserID']]['FirstName'] }} {{ users[userAnswer['UserID']]['LastName'] }}" src="{{ url_for('static', filename=('users/' + (users[userAnswer['UserID']]['ProfilePicture']))) }}">
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        <p>{{ (ns.answerCount / userTotal * 100)|int }}%</p>
+                    </div>
+                </div>
+                {% endfor %}
+                <div style="box-shadow: none;">
+                    <p>Did not answer</p>
+                    <div>
+                        <div>
+                            {% set ns = namespace(answerCount=0) %}
+                            {% for userAnswer in answers %}
+                                {% if userAnswer['QuestionID'] == qIndex and userAnswer['ChosenAnswer'] == '' %}
+                                {% set ns.answerCount = ns.answerCount + 1 %}
+                                <img title="{{ users[userAnswer['UserID']]['FirstName'] }} {{ users[userAnswer['UserID']]['LastName'] }}" src="{{ url_for('static', filename=('users/' + (users[userAnswer['UserID']]['ProfilePicture']))) }}">
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        <p>{{ (ns.answerCount / userTotal * 100)|int }}%</p>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+        <div class="light-container">
+            <div class="data" style="text-align: center;">
+                {% if completedQuestions == quiz.layout|length %}
+                <p class="data-title">Quiz Finished</p>
+                {% else %}
+                <p class="data-title">Quiz Aborted</p>
+                {% endif %}
+
+                <h3 class="data-value">End of Quiz</h3>
+            </div>
+        </div>
+        <!-- <div class="light-container">
             <div class="data">
                 <p class="data-title">Question 1</p>
                 <h3 class="data-value">Which option best describes the internet?</h3>
@@ -51,9 +106,9 @@
                     <p>The internet is a global WAN</p>
                     <div>
                         <div>
-                            <img src="/static/users/2.jpg">
-                            <img src="/static/users/3.jpg">
-                            <img src="/static/users/15.jpg">
+                            <img title="James Day" src="/static/users/2.jpg">
+                            <img title="Jam Day" src="/static/users/3.jpg">
+                            <img title="Teacher Day" src="/static/users/15.jpg">
                         </div>
                         <p>80%</p>
                     </div>
@@ -77,8 +132,119 @@
                 </div>
             </div>
         </div>
+        <div class="light-container">
+            <div class="data">
+                <p class="data-title">Question 2</p>
+                <h3 class="data-value">Is this a true or false question?</h3>
+            </div>
+            <div class="answers">
+                <div class="correct">
+                    <p>True</p>
+                    <div>
+                        <div>
+                            <img src="/static/users/2.jpg">
+                            <img src="/static/users/3.jpg">
+                        </div>
+                        <p>60%</p>
+                    </div>
+                </div>
+                <div>
+                    <p>False</p>
+                    <div>
+                        <div>
+                            <img src="/static/users/2.jpg">
+                            <img src="/static/users/15.jpg">
+                        </div>
+                        <p>40%</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="light-container">
+            <div class="data">
+                <p class="data-title">Question 3</p>
+                <h3 class="data-value">When did world war 2 start?</h3>
+            </div>
+            <div class="slider">
+                <p>1900</p>
+                <div>
+                    <div class="user" style="left: 40%;">
+                        <div class="multiple">+2</div>
+                        <img class="hide" src="/static/users/15.jpg">
+                        <span class="material-symbols-outlined">expand_more</span>
+                    </div>
+                    <div class="answer-area" style="left: 45%;"></div>
+                    <div class="answer-exact" style="left: 45%;"></div>
+                </div>
+                <p>2000</p>
+            </div>
+        </div> -->
     </div>
     <div id="students-page" class="hide">
+        <div id="all-students-page">
+            <p>Select a student to view more details</p>
+            <div>
+                {% for userId in users %}
+                <div class="light-container" data-userid="{{ userId }}" onclick="userClick(this.dataset.userid);">
+                    <div class="data">
+                        <h3 class="data-value">{{ users[userId]['FirstName'] }} {{ users[userId]['LastName'] }}</h3>
+                    </div>
+                    <img src="{{ url_for('static', filename=('users/' + (users[userId]['ProfilePicture']))) }}">
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% for userId in users %}
+        <div id="{{userId}}" class="hide">
+            <p>User</p>
+            <div class="light-container">
+                <div class="data">
+                    <h3 class="data-value">{{ users[userId]['FirstName'] }} {{ users[userId]['LastName'] }}</h3>
+                </div>
+                <div style="display: flex; align-items: baseline; margin-top: 10px; gap: 15px;">
+                    <h1 style="margin: 0; color: var(--green-sea)">{{ ( userScores[userId]['Total'] / (1000 * completedQuestions) * 100 )|int }}%</h1>
+                    <h3 style="margin: 0; opacity: 70%;">{{ userScores[userId]['Total'] }} / {{ 1000 * completedQuestions }} points</h3>
+                </div>
+            </div>
+            <br>
+            <p>Questions</p>
+            {% for qIndex in range(1, completedQuestions + 1) %}
+            <div class="light-container">
+                <div class="data">
+                    <p class="data-title">Question {{ qIndex }}</p>
+                    <h3 class="data-value">{{ quiz.layout[qIndex]['question']['QuestionString'] }}</h3>
+                </div>
+                {% for userAnswer in answers %}
+                    {% if userAnswer['QuestionID'] == quiz.layout[qIndex]['question']['ID'] and userAnswer['UserID'] == userId %}
+                    {% if userAnswer['ChosenAnswer'] == '' %}
+
+                    <p style="margin: 15px 0 0 0;">{{ users[userId]['FirstName'] }} did not pick an answer.</p>
+
+                    {% else %}
+
+                    {% set userScore = userScores[userId][qIndex] %}
+
+                    <p style="margin: 15px 0 -8px 0;">{{ users[userId]['FirstName'] }} chose the answer</p>
+                    <div class="answers">
+                        {% if userScore == 1000 %}
+                        <div class="correct">
+                        {% elif userScore < 1000 and userScore > 0 %}
+                        <div class="partially-correct">
+                        {% else %}
+                        <div class="incorrect">
+                        {% endif %}
+                            <p>{{ userAnswer['ChosenAnswer'] }}</p>
+                            <p>+{{ userScore }}</p>
+                        </div>
+                    </div>
+
+                    {% endif %}
+                    {% endif %}
+                {% endfor %}
+            </div>
+            {% endfor %}
+        </div>
+        {% endfor %}
     </div>
 </div>
 
@@ -108,17 +274,34 @@ function showPage(pageId) {
         }
     }
 }
-function getPage(pageId) {
-    return pagesContainer.getElementById(pageId)
+
+function showStudentPage(userId) {
+    let page = document.getElementById(userId)
+
+    page.classList.remove('hide')
+    for (let p of document.querySelector('#students-page').children) {
+        if (p.id != userId) {
+            p.classList.add('hide')
+        }
+    }
+}
+
+function userClick(userid) {
+    showPage('students-page')
+    showStudentPage(userid)
 }
 
 for (let button of optionButtons) {
     button.onclick = () => {
+        if (button.dataset.pageid == 'students-page') {
+            showStudentPage('all-students-page')
+        }
         showPage(button.dataset.pageid)
     }
 }
 
-showPage('questions-page')
+showPage('students-page')
+showStudentPage('2')
 
 </script>
 

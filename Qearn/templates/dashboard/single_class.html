@@ -18,11 +18,21 @@
     <h3>{{ classData['ClassGroup'] }}</h3>
 </div>
 
+<h3 class="title" style="margin-top: 40px;">Current quiz</h3>
+
 <div class="active-quiz-banner">
-    {% if g.user['AccountType'] == 'teacher' %}
-        <a href="/quizzes">Find a quiz</a>
+    {% if currentQuiz != None %}
+    <div onclick="location.href = '/quiz/{{ currentQuizID }}'">
+        <img src="{{ url_for('static', filename=('quizzes/' + currentQuiz.quizData['HeaderPicture'])) }}">
+        <h3>{{ currentQuiz.quizData['Name'] }}</h3>
+        <p>Click to join.</p>
+    </div>
     {% else %}
+        {% if g.user['AccountType'] == 'teacher' %}
+        <a href="/quizzes">Find a quiz</a>
+        {% else %}
         <p class="no-quiz">There is no quiz being currently run for this class</p>
+        {% endif %}
     {% endif %}
 </div>
 
@@ -30,7 +40,11 @@
     <h3 class="title" style="margin-bottom: 10px;">Previous quizzes</h3>
     <div class="contents">
         {% for quiz in quizzes %}
+        {% if g.user['AccountType'] == 'teacher' %}
+        <div class="clickable" onclick="location.href = '/review/{{ quiz['ID'] }}'">
+        {% else %}
         <div>
+        {% endif %}
             <img src="{{ url_for('static', filename=('quizzes/' + quiz['HeaderPicture'])) }}">
             <h3>{{ quiz['Name'] }}</h3>
             <p>Run on {{ quiz['DateStarted'].strftime("%d %b %Y") }}</p>

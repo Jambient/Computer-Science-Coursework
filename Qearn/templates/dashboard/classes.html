@@ -106,7 +106,10 @@
 <div class="classes-topbar">
     <h2 class="title">Classes</h2>
     {% if g.user['AccountType'] == 'teacher' %}
-        <div id="new-class-button"><span class="material-symbols-outlined">add</span>New Class</div>
+        <div id="new-class-btn" onclick="document.getElementById('modal').classList.remove('hide')">
+            <span class="material-symbols-outlined">add</span>
+            New Class
+        </div>
     {% endif %}
 </div>
     

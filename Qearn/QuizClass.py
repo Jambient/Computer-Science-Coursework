@@ -2,18 +2,18 @@ from Qearn.db import get_db
 from datetime import datetime
 
 class Quiz:
-    def __init__(self, quizData, classData):
+    def __init__(self, quizData, classData, timestamp=datetime.now()):
         db = get_db()
 
         # get correct version id
         db.execute(
             """
             SELECT ID
-            FROM `quiz-version` 
-            WHERE QuizID = %s
+            FROM `quiz-version`
+            WHERE QuizID = %s AND VersionDate <= %s
             ORDER BY VersionDate DESC
             """,
-            (quizData['ID'],)
+            (quizData['ID'], timestamp)
         )
         versionID = db.fetchone()['ID']
 
@@ -70,15 +70,15 @@ class Quiz:
         self.classData = classData
         self.classUsers = classUsers
         self.currentQuestionIndex = 1
-        self.maxQuestionIndex = 2#len(questions)
+        self.maxQuestionIndex = len(self.layout)
         self.isRunning = False
 
         self.dateStarted = datetime.now()
         self.hasSaved = False
 
         # this is data that would be set by the teacher
-        self.questionDelay = 2
-        self.questionDuration = 3
+        self.questionDelay = 3
+        self.questionDuration = 12
 
         self.studentData = {}
         self.roundAnswers = {}
@@ -150,6 +150,18 @@ class Quiz:
         roundAnswers = self.layout[self.currentQuestionIndex]['answers']
         correctAnswers = [a for a in roundAnswers if a['IsCorrect'] == 1]
         return correctAnswers
+    
+    def ScoreUserAnswerForQuestion(self, questionIndex, userAnswer):
+        questionData = self.layout[questionIndex]['question']
+
+        match questionData['QuestionType']:
+            case "Basic":
+                roundAnswers = self.layout[questionIndex]['answers']
+                correctAnswers = [a['AnswerString'] for a in roundAnswers if a['IsCorrect'] == 1]
+
+                return 1000 if userAnswer in correctAnswers else 0
+            
+        return NotImplementedError
 
     def EndRound(self):
         ## checks correct answers
@@ -161,19 +173,28 @@ class Quiz:
         
         print(self.roundAnswers)
 
-        match currentQuestion['QuestionType']:
-            case "Basic":
-                roundAnswers = self.layout[self.currentQuestionIndex]['answers']
-                correctAnswers = [a['AnswerString'] for a in roundAnswers if a['IsCorrect'] == 1]
+        # match currentQuestion['QuestionType']:
+        #     case "Basic":
+        #         roundAnswers = self.layout[self.currentQuestionIndex]['answers']
+        #         correctAnswers = [a['AnswerString'] for a in roundAnswers if a['IsCorrect'] == 1]
 
-                for sid in self.GetStudents():
-                    userScore = 0
+        #         for sid in self.GetStudents():
+        #             userScore = 0
 
-                    if sid in self.roundAnswers:
-                        userAnswer = self.roundAnswers[sid]
-                        userScore = 1000 if userAnswer in correctAnswers else 0
+        #             if sid in self.roundAnswers:
+        #                 userAnswer = self.roundAnswers[sid]
+        #                 userScore = 1000 if userAnswer in correctAnswers else 0
 
-                    userScores[sid] = userScore
+        #             userScores[sid] = userScore
+        
+        for sid in self.GetStudents():
+            userScore = 0
+
+            if sid in self.roundAnswers:
+                userAnswer = self.roundAnswers[sid]
+                userScore = self.ScoreUserAnswerForQuestion(self.currentQuestionIndex, userAnswer)
+
+            userScores[sid] = userScore
 
         for sid in userScores:
             self.studentData[sid][self.currentQuestionIndex] = {
@@ -196,6 +217,8 @@ class Quiz:
     
     def SetAdmin(self, sid):
         self.admin = sid
+    def RemoveAdmin(self):
+        self.admin = None
     def GetAdmin(self):
         return self.admin
     

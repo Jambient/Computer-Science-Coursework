@@ -1,11 +1,82 @@
 @import 'root.css';
 
 body {
-    background-color: #00261F;
+    background-color: rgb(245, 245, 245);
 }
 
 .hide {
     display: none !important;
+}
+
+#teacher-pre-start > img {
+    position: absolute;
+    top: -35px;
+    width: 100%;
+    height: 135px;
+    left: 0;
+}
+
+.light-container {
+    background: white;
+    padding: 15px 20px 15px 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+    margin-bottom: 10px;
+}
+
+#players-page > p {
+    font-size: 18px;
+    margin: 0;
+    margin-bottom: 20px;
+}
+#players-page > div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+#players-page > div.unconnected {
+    opacity: 40%;
+}
+#players-page > div > div {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+#players-page > div h3 {
+    margin: 0;
+    display: none;
+}
+#players-page > div.unconnected > h3 {
+    display: block;
+}
+#players-page > div > div > img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+#players-page > div > div > h2 {
+    margin: 0;
+}
+
+#settings-page > div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+#settings-page > div > h3 {
+    margin: 0;
+}
+#settings-page > div > input[type=number] {
+    padding: 12px;
+    font-family: 'Readex Pro';
+    border: none;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.6);
+    border-radius: 10px;
+    font-size: 20px;
+}
+#settings-page > div > input[type=checkbox] {
+    width: 20px;
+    height: 20px;
 }
 
 .topbar{
@@ -14,15 +85,30 @@ body {
     left: 0;
     width: 100%;
     height: 100px;
-    background-color: var(--green-sea);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-left: 20px;
-    padding-right: 20px;
+    padding-left: 40px;
+    padding-right: 40px;
     box-sizing: border-box;
 }
 .topbar > div {
+    display: flex;
+    gap: 30px;
+    font-size: 25px;
+    color: white;
+}
+.topbar > div > p {
+    opacity: 70%;
+    cursor: pointer;
+    padding-bottom: 5px;
+}
+.topbar > div > p.active {
+    opacity: 100%;
+    border-bottom: 3px solid white;
+}
+
+/* .topbar > div {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -39,15 +125,15 @@ body {
 }
 .topbar > div > div > h3 {
     margin: 0;
-}
+} */
 .topbar > button {
     padding: 10px 30px 10px 30px;
     font-size: 22px;
     font-family: 'Readex Pro';
-    background-color: var(--emerald-green);
+    background-color: white;
     border: none;
     border-radius: 10px;
-    color: white;
+    color: var(--green-sea);
     box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
     cursor: pointer;
 }
@@ -59,7 +145,8 @@ body {
     left: 0;
     width: 100%;
     box-sizing: border-box;
-    padding: 20px;
+    padding: 40px;
+    padding-top: 20px;
 }
 .content .players {
     width: 300px;

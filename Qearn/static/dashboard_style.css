@@ -25,7 +25,7 @@ body {
 
 .modal {
     position: fixed;
-    z-index: 1;
+    z-index: 10;
     left: 0;
     top: 0;
     width: 100%;
@@ -203,7 +203,7 @@ body {
     -webkit-transition-property: transform;
     transition-property: transform;
 }
-.member-selection .search {
+.search {
     margin: 10px;
     box-sizing: border-box;
     border: solid 1px gray;
@@ -217,20 +217,40 @@ body {
     padding-right: 5px;
     align-items: center;
 }
-.member-selection .search input {
+.search input {
     border: none;
     background: none;
     font-family: 'Readex Pro';
     width: 80%;
 }
-.member-selection .search input:focus {
+.search input:focus {
     outline: none;
 }
-
-.member-selection .search span {
+.search span {
     opacity: 80%;
     font-size: 18px;
 }
+
+.search-results {
+    margin-top: 10px;
+}
+.search-results > div {
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.search-results > div > p {
+    margin: 0;
+}
+.search-results > div > p > span {
+    opacity: 60%;
+}
+.search-results > div > span {
+    user-select: none;
+    cursor: pointer;
+}
+
 .member-selection hr {
     opacity: 15%;
     margin-top: 10px;
@@ -428,7 +448,7 @@ body {
 }
 
 .content-container {
-    height: 100%;
+    min-height: 100%;
     background-color: rgb(245, 245, 245);
     position: absolute;
     padding: 20px;
@@ -630,7 +650,7 @@ body {
     margin: 0;
 }
 
-.classes-topbar #save-settings-btn {
+.classes-topbar #save-settings-btn, .classes-topbar #new-class-btn {
     display: flex;
     align-items: center;
     gap: 5px;
@@ -826,10 +846,48 @@ body {
     border: 5px;
     border: 2px solid rgba(0, 0, 0, 0.1);
 }
+.class-edit-form .light-container {
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.class-edit-form .light-container .data {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+.class-edit-form .light-container img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+.class-edit-form .light-container span {
+    color: red;
+    opacity: 40%;
+    user-select: none;
+    cursor: pointer;
+}
+.class-edit-form .light-container span:hover {
+    opacity: 100%;
+}
+.class-edit-form .light-container p {
+    margin: 0;
+    opacity: 60%;
+}
+
+#add-answer-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    border: dotted 2px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    border-radius: 8px;
+}
 
 .all-classes-button {
     position: absolute;
-    width: 130px;
     background: white;
     top: 40px;
     transform: translate(0, -50%);
@@ -837,6 +895,7 @@ body {
     display: flex;
     align-items: center;
     padding-left: 20px;
+    padding-right: 10px;
     color: black;
     border-radius: 0 15px 15px 0;
     gap: 5px;
@@ -847,7 +906,7 @@ body {
     border: dotted 2px gray;
     height: fit-content;
     margin: auto;
-    margin-top: 40px;
+    margin-top: 10px;
     margin-bottom: 20px;
     width: 100%;
     height: 80px;
@@ -869,6 +928,36 @@ body {
 }
 .active-quiz-banner a:hover {
     opacity: 80%;
+}
+.active-quiz-banner > div {
+    padding: 20px;
+    background: white;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    user-select: none;
+    width: 100%;
+    box-sizing: border-box;
+}
+.active-quiz-banner > div > img {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    margin: -20px;
+    object-fit: cover;
+    opacity: 30%;
+}
+.active-quiz-banner > div > h3 {
+    margin: 0;
+    margin-bottom: 5px;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+}
+.active-quiz-banner > div > p {
+    margin: 0;
+    opacity: 50%;
+    text-align: center;
 }
 
 .previous-quizzes {
@@ -1059,6 +1148,7 @@ body {
     gap: 10px;
     cursor: pointer;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+    border: none;
 }
 
 /* single review page */
@@ -1079,10 +1169,17 @@ body {
     font-weight: bold;
 }
 
-#overview-page > div {
+#overview-page > div, #all-students-page > div > div {
     display: flex;
     align-items: center;
     justify-content: space-between;
+}
+#questions-page > div {
+    margin-bottom: 20px;
+}
+#all-students-page > div > div {
+    padding: 12px;
+    cursor: pointer;
 }
 
 .light-container {
@@ -1099,6 +1196,12 @@ body {
 }
 .light-container .data .data-value {
     margin: 0;
+}
+.light-container > img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px solid gray;
 }
 .light-container .icon {
     width: 60px;
@@ -1132,6 +1235,14 @@ body {
     background-color: var(--green-sea);
     color: white;
 }
+.light-container .answers > div.partially-correct {
+    background-color: darkgoldenrod;
+    color: white;
+}
+.light-container .answers > div.incorrect {
+    background-color: firebrick;
+    color: white;
+}
 .light-container .answers > div p {
     margin: 0;
 }
@@ -1144,6 +1255,9 @@ body {
     display: flex;
     height: 29px;
 }
+.light-container .answers > div > div > div:hover img {
+    margin-left: 2px;
+}
 .light-container .answers > div.correct > div img {
     border: 2px solid white;
 }
@@ -1154,6 +1268,8 @@ body {
     border: 2px solid gray;
     margin-left: -12px;
     background: lightgray;
+    transition: margin-left 0.3s;
+    cursor: pointer;
 }
 .light-container .answers > div.correct > div p {
     opacity: 100%;
@@ -1161,4 +1277,74 @@ body {
 .light-container .answers > div > div p {
     font-size: 20px;
     opacity: 70%;
+}
+
+.light-container .slider {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    margin-top: 50px;
+}
+.light-container .slider p {
+    margin: 0;
+}
+.light-container .slider > div {
+    width: 100%;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+    border-radius: 5px;
+    height: 12px;
+    position: relative;
+}
+.light-container .slider .answer-area {
+    position: absolute;
+    top: 0;
+    width: 20%;
+    height: 100%;
+    background: var(--green-sea);
+    opacity: 30%;
+    border-radius: 5px;
+    transform: translate(-50%, 0);
+}
+.light-container .slider .answer-exact {
+    position: absolute;
+    top: 0;
+    width: 2%;
+    height: 100%;
+    background: var(--green-sea);
+    border-radius: 5px;
+    transform: translate(-50%, 0);
+}
+.light-container .slider .user {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: absolute;
+    bottom: 100%;
+    transform: translate(-50%, 0);
+}
+.light-container .slider .user img {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: lightgray;
+    border: 2px solid gray;
+}
+.light-container .slider .user span {
+    opacity: 40%;
+    font-size: 22px;
+}
+.light-container .slider .user .multiple {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: lightgray;
+    border: 2px solid gray;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.edit-students {
+    width: 550px;
+    height: 410px;
 }

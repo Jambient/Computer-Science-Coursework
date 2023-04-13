@@ -7,8 +7,11 @@ import os, shutil
 
 from Qearn.auth import login_required, load_logged_in_user
 from Qearn.db import get_db
+from Qearn.QuizClass import Quiz
 
 from passlib.hash import sha256_crypt
+
+from Qearn import ClassToRoom, rooms
 
 bp = Blueprint('dashboard', __name__)
 
@@ -114,9 +117,15 @@ def single_class(classID):
     ## get previously played quizzes
     db.execute('SELECT * FROM session, quiz WHERE ClassID = %s ORDER BY DateStarted DESC', (classID))
     previousQuizzes = db.fetchall()
-    print(previousQuizzes)
 
-    return render_template('dashboard/single_class.html', classData=classData, quizzes=previousQuizzes)
+    ## get active quiz for this classroom
+    currentQuiz = None
+    currentQuizID = None
+    if classID in ClassToRoom:
+        currentQuiz = rooms[ClassToRoom[classID]]
+        currentQuizID = ClassToRoom[classID]
+
+    return render_template('dashboard/single_class.html', classData=classData, quizzes=previousQuizzes, currentQuiz=currentQuiz, currentQuizID=currentQuizID)
 
 @bp.route('/classes/<int:classID>/edit')
 @login_required
@@ -135,7 +144,15 @@ def single_class_edit(classID):
     db.execute('SELECT * FROM class WHERE ID = %s', (classID,))
     classData = db.fetchone()
 
-    return render_template('dashboard/single_class_edit.html', classData=classData)
+    ## get all members in this classroom
+    db.execute('SELECT user.* FROM `user-to-class` as uc, user WHERE uc.UserID = user.ID AND uc.ClassID = %s AND user.ID != %s', (classID, g.user['ID']))
+    users = db.fetchall()
+
+    ## get all members in the school
+    db.execute('SELECT * FROM user WHERE SchoolID = %s AND ID != %s', (classData['SchoolID'], g.user['ID']))
+    schoolUsers = db.fetchall()
+
+    return render_template('dashboard/single_class_edit.html', classData=classData, users=users, schoolUsers=schoolUsers)
 
 @bp.route('/review')
 @login_required
@@ -171,8 +188,60 @@ def single_review(sessionID):
 
     if isInClass == False:
         return redirect('/')
+    
+    ## get all data required for page ##
 
-    return render_template('dashboard/single_review.html')
+    # we first need to get the class data and quiz data
+    db.execute('SELECT * FROM class WHERE ID = %s', (sessionData['ClassID'],))
+    classData = db.fetchone()
+
+    db.execute('SELECT * FROM quiz WHERE ID = %s', (sessionData['QuizID'],))
+    quizData = db.fetchone()
+
+    # we then need to create a dummy quiz so it can load the correct quiz information
+    dummyQuiz = Quiz(quizData, classData, timestamp=sessionData['DateStarted'])
+
+    # this dummy quiz only contains quiz information not student answers
+    # so we need to get those now
+    db.execute('SELECT * FROM `user-result` WHERE SessionID = %s', (sessionData['ID'],))
+    userAnswers = db.fetchall()
+
+    # it is probably best to parse this data on the server rather than the client
+    # but it is fine for the moment
+
+    # get some other required data
+    completedQuestions = len(set([a['QuestionID'] for a in userAnswers]))
+
+    totalCompetedUsers = len(set([a['UserID'] for a in userAnswers]))
+    print(totalCompetedUsers)
+
+    db.execute('SELECT user.* FROM user, `user-to-class` as uc WHERE uc.UserID = user.ID AND uc.ClassID = %s', (sessionData['ClassID'],))
+    users = {}
+    for user in db.fetchall():
+        if user['ID'] in set([a['UserID'] for a in userAnswers]):
+            users[user['ID']] = user
+
+    # pre calculate all the user scores
+    userScores = {}
+    averageCombinedScore = 0
+
+    for id in users:
+        user = users[id]
+        userScores[id] = {}
+
+        for qIndex in range(1, completedQuestions + 1):
+            userAnswer = [a['ChosenAnswer'] for a in userAnswers if a['UserID'] == id and a['QuestionID'] == dummyQuiz.layout[qIndex]['question']['ID']][0]
+            userScores[id][qIndex] = dummyQuiz.ScoreUserAnswerForQuestion(qIndex, userAnswer)
+        
+        userScores[id]['Total'] = sum([userScores[id][n] for n in range(1, completedQuestions + 1)])
+        averageCombinedScore += userScores[id]['Total']
+
+    averageCombinedScore /= totalCompetedUsers
+
+    print(userScores)
+
+    
+    return render_template('dashboard/single_review.html', quiz=dummyQuiz, answers=userAnswers, completedQuestions=completedQuestions, users=users, userTotal=totalCompetedUsers, userScores=userScores, averageScore=averageCombinedScore)
 
 @bp.route('/settings', methods=('GET', 'POST'))
 @login_required
