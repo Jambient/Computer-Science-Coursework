@@ -1,7 +1,7 @@
 @import 'root.css';
 
 body {
-    background-color: rgb(245, 245, 245);
+    background-color: var(--background-grey);
 }
 
 .hide {
@@ -20,7 +20,7 @@ body {
     background: white;
     padding: 15px 20px 15px 20px;
     border-radius: 8px;
-    box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+    box-shadow: var(--box-shadow-small);
     margin-bottom: 10px;
 }
 

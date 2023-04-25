@@ -38,14 +38,31 @@ socket.on('end', () => {
     showPage('end')
 })
 
+socket.on('new student', (userIDs) => {
+    let playerPageStudents = document.querySelector('#players-page').children
+    let playerCount = document.querySelector('#connected-count')
+    playerCount.innerHTML = userIDs.length
+
+    for (studentBox of playerPageStudents) {
+        if (studentBox.tagName.toLowerCase() === 'div') {
+            if (userIDs.includes(parseInt(studentBox.dataset.userid))) {
+                studentBox.classList.remove('unconnected')
+            }
+        }
+    }
+})
+
 startButton.onclick = function() {
-    console.log('epic')
-    socket.emit('start')
+    let settingsForm = document.querySelector('#settings-page')
+    let formData = new FormData(settingsForm)
+
+    socket.emit('start', Object.fromEntries(formData))
 }
 
 saveButton.onclick = function() {
     console.log('saving quiz')
     socket.emit('save')
+    window.location = '/'
 }
 
 // handling the pages on the initial start screen

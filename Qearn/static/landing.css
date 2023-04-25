@@ -1,19 +1,9 @@
-:root {
-    --green-sea: #16A086;
-}
+@import 'root.css';
 
 body {
     margin: 80px;
     margin-top: 10px;
     font-family: 'Readex Pro' !important;
-}
-
-.material-symbols-outlined {
-    font-variation-settings:
-      'FILL' 1,
-      'wght' 400,
-      'GRAD' 0,
-      'opsz' 48
 }
 
 nav {

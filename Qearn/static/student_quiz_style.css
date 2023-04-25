@@ -1,24 +1,9 @@
-:root {
-    --green-sea: #16A086;
-}
+@import 'root.css';
 
 body {
     margin: 15px;
     overflow: hidden;
-    font-family: 'Readex Pro';
     background: rgb(30, 30, 30);
-}
-
-.material-symbols-outlined {
-    font-variation-settings:
-      'FILL' 1,
-      'wght' 400,
-      'GRAD' 0,
-      'opsz' 48
-}
-
-.hide {
-    display: none !important;
 }
 
 .settings {

@@ -1,7 +1,14 @@
 :root {
     --green-sea: #16A086;
-    --emerald-green: #2DCC70;
-    --primary-black: #212427;
+    --dark-green-sea: #25684c; 
+    --text-black: #212427;
+    --background-white: white;
+    --background-grey: rgb(245, 245, 245);
+
+    --box-shadow-small: 0 0 2px rgba(0, 0, 0, 0.3);
+
+    --pages-sidebar-width: 250px;
+    --user-sidebar-width: 280px;
 }
 
 body {
@@ -14,4 +21,8 @@ body {
       'wght' 400,
       'GRAD' 0,
       'opsz' 48
+}
+
+.hide {
+    display: none !important;
 }

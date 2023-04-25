@@ -40,36 +40,31 @@
         <div class="content">
             <div id="overview-page"></div>
             <div id="players-page">
-                <p>3 / 10 students connected</p>
-                <div class="light-container">
+                <p><span id="connected-count">0</span> / {{classUsers|length}} students connected</p>
+                {% for user in classUsers %}
+                <div class="light-container unconnected" data-userid="{{ user['ID'] }}">
                     <div>
-                        <img src="/static/users/2.jpg">
-                        <h2>James Day</h2>
+                        <img src="{{ url_for('static', filename=('users/' + (user['ProfilePicture']))) }}">
+                        <h2>{{ user['FirstName'] }} {{ user['LastName'] }}</h2>
                     </div>
                     <h3>Waiting for student...</h3>
                 </div>
-                <div class="light-container unconnected">
-                    <div>
-                        <img src="/static/users/2.jpg">
-                        <h2>James Day</h2>
-                    </div>
-                    <h3>Waiting for student...</h3>
-                </div>
+                {% endfor %}
             </div>
-            <div id="settings-page">
+            <form id="settings-page">
                 <div class="light-container">
                     <h3>Delay between Questions</h3>
-                    <input type="number" value="3" size="5">
+                    <input name="questionDelay" type="number" value="3" size="5" min="1" max="20">
                 </div>
                 <div class="light-container">
                     <h3>Duration of Questions</h3>
-                    <input type="number" value="12" size="5">
+                    <input name="questionDuration" type="number" value="12" size="5" min="1" max="60">
                 </div>
                 <div class="light-container">
                     <h3>Time based Scoring</h3>
-                    <input type="checkbox">
+                    <input name="hasTimeBasedScoring" type="checkbox">
                 </div>
-            </div>
+            </form>
             <!-- <div class="players">
                 <div class="title">
                     <h3>Connected Players</h3>
@@ -130,7 +125,7 @@
             <h2 class="message">Quiz Ended</h2>
             <h4 class="max-points">Would you like to save this quiz</h4>
             <div>
-                <button class="cancel-btn">Cancel</button>
+                <button class="cancel-btn" onclick="window.location='/'">Cancel</button>
                 <button class="save-btn">Save Quiz</button>
             </div>
         </div>

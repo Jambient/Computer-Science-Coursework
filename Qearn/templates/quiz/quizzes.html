@@ -23,7 +23,7 @@
     </div>
     <div class="account-box">
         <h4>{{ g.user['FirstName'] }} {{ g.user['LastName'] }}</h4>
-        <img class="profile-img" src="{{ url_for('static', filename=('users/' + (g.user['ID']|string) + '.jpg')) }}">
+        <img class="profile-img" src="{{ url_for('static', filename=('users/' + g.user['ProfilePicture'])) }}">
     </div>
 </nav>
 
@@ -32,13 +32,11 @@
         <h1>What are you looking for?</h1>
         <form>
             <div class="search-box">
-                <input name="q" placeholder="Computer Science" value="{{ query }}">
+                <input name="q" placeholder="Search for a quiz" value="{{ query }}">
                 <div class="underline"></div>
                 <span class="material-symbols-outlined">search</span>
             </div>
         </form>
-    </div>
-    <div class="filter">
     </div>
 </section>
 
@@ -47,11 +45,11 @@
     {% for quiz in quizzes %}
         <div class="result-card">
             <div class="image">
-                <img src="{{ url_for('static', filename=('quizzes/' + (quiz['ID']|string) + '.jpg')) }}">
+                <img src="{{ url_for('static', filename=('quizzes/' + quiz['HeaderPicture'])) }}">
             </div>
             <h1 class="title">{{ quiz['Name'] }}</h1>
             <div class="extra-data">
-                <p class="question-count">{{ (quiz['QuestionCount']|string) + ' question' + ('s' if quiz['QuestionCount'] != 1 else '') }}</p>
+                <!-- <p class="question-count">{{ (quiz['QuestionCount']|string) + ' question' + ('s' if quiz['QuestionCount'] != 1 else '') }}</p> -->
                 <p class="plays-count">{{ (quiz['Plays']|string) + ' play' + ('s' if quiz['Plays'] != 1 else '') }}</p>
             </div>
             <a class="play-button" href="{{ '/quizzes/' + (quiz['ID']|string) }}">View Quiz</a>

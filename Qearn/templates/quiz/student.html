@@ -21,20 +21,16 @@
         <img src="/static/uploads/QearnLogo.png">
         <div class="quiz-data">
             <div class="quiz-thumbnail">
-                <img src="https://images1.content-hci.com/commimg/myhotcourses/blog/post/myhc_89683.jpg">
+                <img src="{{ url_for('static', filename=('quizzes/' + quiz.quizData['HeaderPicture'])) }}">
                 <div class="gradient"></div>
-                <h1>{{ quiz['Name'] }}</h1>
-                <p class="class-name">Computer Science</p>
-                <p class="class-group">Year 13</p>
+                <h1>{{ quiz.quizData['Name'] }}</h1>
+                <p class="class-name">{{ quiz.classData['ClassName'] }}</p>
+                <p class="class-group">{{ quiz.classData['ClassGroup'] }}</p>
             </div>
             <div class="quiz-info">
                 <div>
-                    <h1>10</h1>
+                    <h1>{{ quiz.layout|length }}</h1>
                     <p>Questions</p>
-                </div>
-                <div>
-                    <h1>2</h1>
-                    <p>Previous Plays</p>
                 </div>
             </div>
         </div>

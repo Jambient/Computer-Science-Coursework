@@ -1,3 +1,4 @@
+## Imports ##
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, url_for, session
 )
@@ -5,22 +6,25 @@ from werkzeug.exceptions import abort
 
 import os, shutil
 
-from Qearn.auth import login_required, load_logged_in_user
+from Qearn.auth import login_required, load_logged_in_user, teacher_required
 from Qearn.db import get_db
 from Qearn.QuizClass import Quiz
+from Qearn.quiz import ClassToRoom, rooms
 
 from passlib.hash import sha256_crypt
 
-from Qearn import ClassToRoom, rooms
+## Variables ##
 
+# create the blueprint for all the routes
 bp = Blueprint('dashboard', __name__)
 
+# create a list of extensions allowed for images
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
+
+## Functions ##
 def get_file_ending(filename):
     ending = filename.rsplit('.', 1)[1].lower()
     return ending
-    # return '.' in filename and \
-    #        filename.rsplit('.', 1)[1].lower()
 
 @bp.route('/')
 def dashboard():
@@ -39,6 +43,7 @@ def home():
 def classes():
     db = get_db()
 
+    # method for users requesting the classrooms they are in
     if request.method == 'GET':
         ## get users classrooms
         db.execute('SELECT * FROM class as c, `user-to-class` as u WHERE (u.ClassID = c.ID) AND (u.UserID = %s)', (g.user['ID'],))
@@ -50,9 +55,8 @@ def classes():
             member_count = db.fetchone()
             classroom['MemberCount'] = member_count['UserCount']
 
+    # method for users creating a new classroom
     elif request.method == 'POST':
-        print('got request')
-        
         # check if the post request has the file part
         if 'header-image' not in request.files:
             flash('No file part')
@@ -75,22 +79,13 @@ def classes():
 
         if file and fileEnding in ALLOWED_EXTENSIONS:
             ## add new classroom
-            db.execute(
-                "INSERT INTO class (SchoolID, ClassName, ClassGroup) VALUES (%s, %s, %s)",
-                (session['SchoolID'], request.form["name"], request.form["age-group"])
-            )
+            db.execute("INSERT INTO class (SchoolID, ClassName, ClassGroup) VALUES (%s, %s, %s)", (session['SchoolID'], request.form["name"], request.form["age-group"]))
             classId = db.lastrowid
-            db.execute(
-                "UPDATE class SET HeaderPicture = %s WHERE ID = %s",
-                (f'{classId}.{fileEnding}', classId)
-            )
+            db.execute("UPDATE class SET HeaderPicture = %s WHERE ID = %s", (f'{classId}.{fileEnding}', classId))
             file.save(os.path.join('Qearn/static/classes', f'{classId}.{fileEnding}'))
 
             ## add teacher to classroom
-            db.execute(
-                "INSERT INTO `user-to-class` (UserID, ClassID) VALUES (%s, %s)",
-                (g.user['ID'], classId)
-            )
+            db.execute("INSERT INTO `user-to-class` (UserID, ClassID) VALUES (%s, %s)", (g.user['ID'], classId))
 
             return redirect(request.url)
         else:
@@ -127,51 +122,75 @@ def single_class(classID):
 
     return render_template('dashboard/single_class.html', classData=classData, quizzes=previousQuizzes, currentQuiz=currentQuiz, currentQuizID=currentQuizID)
 
-@bp.route('/classes/<int:classID>/edit')
+@bp.route('/classes/<int:classID>/edit', methods=('GET', 'POST'))
 @login_required
+@teacher_required
 def single_class_edit(classID):
     db = get_db()
 
-    ## check user can access this classroom
-    db.execute('SELECT CASE WHEN EXISTS (SELECT * FROM `user-to-class` WHERE UserID = %s AND ClassID = %s) THEN 1 ELSE 0 END AS Result', (g.user['ID'], classID))
-    isInClass = db.fetchone()
+    if request.method == 'GET':
 
-    ## check user is a teacher
-    if g.user['AccountType'] != 'teacher':
-        return False
+        ## check user can access this classroom
+        db.execute('SELECT CASE WHEN EXISTS (SELECT * FROM `user-to-class` WHERE UserID = %s AND ClassID = %s) THEN 1 ELSE 0 END AS Result', (g.user['ID'], classID))
+        isInClass = db.fetchone()
 
-    ## get data about this classroom
-    db.execute('SELECT * FROM class WHERE ID = %s', (classID,))
-    classData = db.fetchone()
+        ## check user is a teacher
+        if g.user['AccountType'] != 'teacher':
+            return False
 
-    ## get all members in this classroom
-    db.execute('SELECT user.* FROM `user-to-class` as uc, user WHERE uc.UserID = user.ID AND uc.ClassID = %s AND user.ID != %s', (classID, g.user['ID']))
-    users = db.fetchall()
+        ## get data about this classroom
+        db.execute('SELECT * FROM class WHERE ID = %s', (classID,))
+        classData = db.fetchone()
 
-    ## get all members in the school
-    db.execute('SELECT * FROM user WHERE SchoolID = %s AND ID != %s', (classData['SchoolID'], g.user['ID']))
-    schoolUsers = db.fetchall()
+        ## get all members in this classroom
+        db.execute('SELECT user.* FROM `user-to-class` as uc, user WHERE uc.UserID = user.ID AND uc.ClassID = %s AND user.ID != %s', (classID, g.user['ID']))
+        users = db.fetchall()
 
-    return render_template('dashboard/single_class_edit.html', classData=classData, users=users, schoolUsers=schoolUsers)
+        ## get all members in the school
+        db.execute('SELECT * FROM user WHERE SchoolID = %s AND ID != %s', (classData['SchoolID'], g.user['ID']))
+        schoolUsers = db.fetchall()
+
+        return render_template('dashboard/single_class_edit.html', classData=classData, users=users, schoolUsers=schoolUsers)
+    elif request.method == 'POST':
+        newClassName = request.form['class-name']
+        newClassGroup = request.form['class-group']
+
+        # upload the new profile picture if the user has switched
+        if 'header-image' in request.files:
+            file = request.files['header-image']
+            fileEnding = get_file_ending(file.filename)
+
+            # If the user does not select a file, the browser submits an empty file without a filename.
+            if file.filename == '':
+                return redirect(request.url)
+
+            if file and fileEnding in ALLOWED_EXTENSIONS:
+                imageFileName = f'{classID}.{fileEnding}'
+                file.save(os.path.join('Qearn/static/classes', imageFileName))
+                db.execute('UPDATE class SET HeaderPicture = %s WHERE ID = %s', (imageFileName, classID))
+
+
+        return redirect(url_for('dashboard.single_class', classID=classID))
 
 @bp.route('/review')
 @login_required
+@teacher_required
 def review():
+    # get the database connection
     db = get_db()
 
-    ## get all the session the user has every run in every classroom
+    ## get all the session the user has run in every classroom
     db.execute('SELECT session.*, quiz.* FROM `user-to-class` as u, session, quiz WHERE u.UserID = %s and session.ClassID = u.ClassID ORDER BY DateStarted DESC', (g.user['ID']),)
     allSessions = db.fetchall()
 
     for session in allSessions:
         session['onclick'] = f"window.location='review/{session['ID']}'"
 
-    print(allSessions)
-
     return render_template('dashboard/review.html', sessions=allSessions)
 
 @bp.route('/review/<int:sessionID>')
 @login_required
+@teacher_required
 def single_review(sessionID):
     db = get_db()
 
@@ -191,7 +210,7 @@ def single_review(sessionID):
     
     ## get all data required for page ##
 
-    # we first need to get the class data and quiz data
+    # get the class data and quiz data
     db.execute('SELECT * FROM class WHERE ID = %s', (sessionData['ClassID'],))
     classData = db.fetchone()
 
@@ -201,20 +220,20 @@ def single_review(sessionID):
     # we then need to create a dummy quiz so it can load the correct quiz information
     dummyQuiz = Quiz(quizData, classData, timestamp=sessionData['DateStarted'])
 
-    # this dummy quiz only contains quiz information not student answers
-    # so we need to get those now
+    # this dummy quiz only contains quiz information but not student answers
+    # so get all student answers related to this session
     db.execute('SELECT * FROM `user-result` WHERE SessionID = %s', (sessionData['ID'],))
     userAnswers = db.fetchall()
 
-    # it is probably best to parse this data on the server rather than the client
-    # but it is fine for the moment
-
-    # get some other required data
+    # get the amount of questions that were completed in the quiz
+    # (this will be less than the amount of questions in the quiz for cases when the quiz is aborted)
     completedQuestions = len(set([a['QuestionID'] for a in userAnswers]))
 
+    # get the number of users who actually took part in the session
     totalCompetedUsers = len(set([a['UserID'] for a in userAnswers]))
-    print(totalCompetedUsers)
 
+    # get all the users in the class and create a lookup table for the users who took part
+    # this lookup table will make it easier to access information when building the html file
     db.execute('SELECT user.* FROM user, `user-to-class` as uc WHERE uc.UserID = user.ID AND uc.ClassID = %s', (sessionData['ClassID'],))
     users = {}
     for user in db.fetchall():
@@ -229,6 +248,7 @@ def single_review(sessionID):
         user = users[id]
         userScores[id] = {}
 
+        # for every question, get the users answer and calculate a score for it
         for qIndex in range(1, completedQuestions + 1):
             userAnswer = [a['ChosenAnswer'] for a in userAnswers if a['UserID'] == id and a['QuestionID'] == dummyQuiz.layout[qIndex]['question']['ID']][0]
             userScores[id][qIndex] = dummyQuiz.ScoreUserAnswerForQuestion(qIndex, userAnswer)
@@ -237,9 +257,6 @@ def single_review(sessionID):
         averageCombinedScore += userScores[id]['Total']
 
     averageCombinedScore /= totalCompetedUsers
-
-    print(userScores)
-
     
     return render_template('dashboard/single_review.html', quiz=dummyQuiz, answers=userAnswers, completedQuestions=completedQuestions, users=users, userTotal=totalCompetedUsers, userScores=userScores, averageScore=averageCombinedScore)
 
@@ -249,8 +266,10 @@ def settings():
     if request.method == 'GET':
         return render_template('dashboard/settings.html', hasRecentlySaved = False)
     elif request.method == 'POST':
+        # get a database connection
         db = get_db()
 
+        # get all the data in the submitted form
         newFirstName = request.form['first-name']
         newLastName = request.form['last-name']
         newEmail = request.form['email']
@@ -264,22 +283,19 @@ def settings():
         # upload the new profile picture if the user has switched
         if 'has-changed-pfp' in request.form:
             if 'pfp' not in request.files:
-                print('not file sent')
                 return redirect(request.url)
             
             file = request.files['pfp']
             fileEnding = get_file_ending(file.filename)
 
-            print('got file with file ending', fileEnding)
-
-            # If the user does not select a file, the browser submits an
-            # empty file without a filename.
+            # If the user does not select a file, the browser submits an empty file without a filename.
             if file.filename == '':
-                print('empty file submitted')
                 return redirect(request.url)
 
             if file and fileEnding in ALLOWED_EXTENSIONS:
-                file.save(os.path.join('Qearn/static/users', g.user['ProfilePicture']))
+                imageFileName = f'{g.user["ID"]}.{fileEnding}'
+                file.save(os.path.join('Qearn/static/users', imageFileName))
+                db.execute('UPDATE user SET ProfilePicture = %s WHERE ID = %s', (imageFileName, g.user['ID']))
 
         # update password if the user has entered a new one
         if newPassword != '' and len(newPassword) >= 8:
@@ -288,6 +304,6 @@ def settings():
         # update other user data
         db.execute('UPDATE user SET FirstName = %s, LastName = %s, Email = %s WHERE ID = %s', (newFirstName, newLastName, newEmail, g.user['ID']))
 
-        # this function ran before we updated the users information, so we have to run it again
+        # the users loaded data is now incorrect so we have to load it again
         load_logged_in_user()
         return render_template('dashboard/settings.html', hasRecentlySaved = True)

@@ -1,26 +1,9 @@
-:root {
-    --green-sea: rgb(22, 160, 134);
-    --pages-sidebar-width: 250px;
-    --user-sidebar-width: 280px;
-}
+@import 'root.css';
 
 body {
     margin: 0;
-    font-family: 'Readex Pro';
     flex-flow: row;
     width: 100%;
-}
-
-.material-symbols-outlined {
-  font-variation-settings:
-    'FILL' 1,
-    'wght' 400,
-    'GRAD' 0,
-    'opsz' 48
-}
-
-.hide {
-    display: none !important;
 }
 
 .modal {

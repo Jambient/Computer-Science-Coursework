@@ -30,17 +30,17 @@
 <form method="POST" enctype="multipart/form-data" class="class-edit-form" id="class-edit-form">
     <h3>Classroom Header</h3>
     <div class="classHeader">
-        <img src="{{ url_for('static', filename=('classes/' + classData['HeaderPicture'])) }}">
+        <img id="header-preview" src="{{ url_for('static', filename=('classes/' + classData['HeaderPicture'])) }}">
         <div class="gradient" style="bottom: 0;"></div>
         <label for="header-image" class="upload-btn">Upload New Image</label>
-        <input type="file" style="display: none;" id="header-image">
+        <input type="file" style="display: none;" id="header-image" name="header-image" accept="image/png, image/jpeg">
     </div>
 
     <h3>Classroom Name</h3>
-    <input type="text" value="{{ classData['ClassName'] }}">
+    <input type="text" value="{{ classData['ClassName'] }}" name="class-name">
 
     <h3>Classroom Group</h3>
-    <input type="text" value="{{ classData['ClassGroup'] }}">
+    <input type="text" value="{{ classData['ClassGroup'] }}" name="class-group">
 
     <h3>Manage Members</h3>
     <div id="member-list">
@@ -108,6 +108,22 @@ searchBox.addEventListener('input', function() {
         }
     }
 })
+
+// set up the initial member list
+for (let member of classMemberList.children) {
+    member.querySelector('span').onclick = () => {
+        member.remove()
+    }
+}
+
+var imgInp = document.querySelector('#header-image')
+var imgPreview = document.querySelector('#header-preview')
+imgInp.onchange = evt => {
+  const [file] = imgInp.files
+  if (file) {
+    imgPreview.src = URL.createObjectURL(file)
+  }
+}
 
 </script>
 

@@ -85,7 +85,7 @@
     </div>
     <div class="account-box">
         <h4 style="color: black;">{{ g.user['FirstName'] }} {{ g.user['LastName'] }}</h4>
-        <img class="profile-img" src="{{ url_for('static', filename=('users/' + (g.user['ID']|string) + '.jpg')) }}">
+        <img class="profile-img" src="{{ url_for('static', filename=('users/' + g.user['ProfilePicture'])) }}">
     </div>
 </nav>
 

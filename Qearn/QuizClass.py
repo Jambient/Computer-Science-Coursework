@@ -1,11 +1,15 @@
+## Imports ##
 from Qearn.db import get_db
 from datetime import datetime
 
+## Class ##
 class Quiz:
     def __init__(self, quizData, classData, timestamp=datetime.now()):
+
+        # get a database connection
         db = get_db()
 
-        # get correct version id
+        # get correct version id based on timestamp
         db.execute(
             """
             SELECT ID
@@ -16,8 +20,6 @@ class Quiz:
             (quizData['ID'], timestamp)
         )
         versionID = db.fetchone()['ID']
-
-        print('version is', versionID)
 
         # get all questions
         db.execute(
@@ -42,6 +44,7 @@ class Quiz:
         db.execute("SELECT * FROM user as u, `user-to-class` as uc WHERE u.ID = uc.UserID AND uc.ClassID = %s AND u.AccountType = 'student'", (classData['ID'],))
         classUsers = db.fetchall()
 
+        # build the layout of the quiz
         self.layout = {}
         for i in range(1, quizLength+1):
             data = {}
@@ -56,6 +59,7 @@ class Quiz:
             answersData = []
             answerCount = max([a['AnswerIdentifier'] for a in currentIndexAnswers])
 
+            # for each answer index get the correct answer based on the version of the quiz
             for aIndex in range(1, answerCount + 1):
                 identifierAnswers = [a for a in currentIndexAnswers if a['AnswerIdentifier'] == aIndex]
                 identifierAnswers.sort(key=lambda a: a['QuizVersionID'] - versionID, reverse=True)
@@ -79,6 +83,7 @@ class Quiz:
         # this is data that would be set by the teacher
         self.questionDelay = 3
         self.questionDuration = 12
+        self.timeBasedPoints = False
 
         self.studentData = {}
         self.roundAnswers = {}
@@ -215,8 +220,8 @@ class Quiz:
     def GetStudents(self):
         return self.clients
     
-    def SetAdmin(self, sid):
-        self.admin = sid
+    def SetAdmin(self, sid, userid):
+        self.admin = {"SID": sid, "ID": userid}
     def RemoveAdmin(self):
         self.admin = None
     def GetAdmin(self):
@@ -245,21 +250,3 @@ class Quiz:
                 questionId = self.layout[questionIndex]['question']['ID']
                 db.execute('INSERT INTO `user-result` (UserID, SessionID, QuestionID, ChosenAnswer) VALUES (%s, %s, %s, %s)',
                             (userId, sessionId, questionId, answerString))
-
-                
-
-
-## quiz life cycle
-
-# state = lobby
-# users from the class can join and leave during this period
-
-# state = running
-# users that were already in the game can join back
-# 
-
-
-## important things needed for my quiz system
-# people join the quiz using websockets
-# people send and recieve data about the quiz using websockets
-# when and how do I send data about the websocket? The admin calls the next round.

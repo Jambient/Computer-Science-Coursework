@@ -1,25 +1,9 @@
-:root {
-    --green-sea: #16A086;
-}
+@import 'root.css';
 
 body {
     margin: 0;
     overflow: hidden;
-    font-family: 'Readex Pro';
     display: flex;
-}
-
-.material-symbols-outlined {
-    font-variation-settings:
-      'FILL' 0,
-      'wght' 400,
-      'GRAD' 0,
-      'opsz' 48
-}
-
-.hide {
-    /* opacity: 0% !important; */
-    display: none !important;
 }
 
 .title {
@@ -34,7 +18,7 @@ body {
 }
 
 .content_display {
-    background-color: rgb(37, 104, 76);
+    background-color: var(--dark-green-sea);
     width: 60%;
     height: 100vh;
     float: right;
